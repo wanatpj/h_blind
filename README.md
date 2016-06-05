@@ -1,9 +1,10 @@
 # H_BLIND
 Extraction of watermark embedded with E_BLIND method on multiple digital pictures.
 
+## Objective
 E_BLIND is no longer good way to watermark set of images. You can still watermark one or two, but not more with the same watermark. Or you can still have the set of watermarks, but do not group pictures with the same watermark.
 
-Introduction:
+## Introduction
 Film production company makes a film. They claim that their new movie is
 awesome. However, they want to make money, so they want people to pay for
 watching them in cinema. Life is tough and nobody will pay for a bad movie.
@@ -20,7 +21,7 @@ they watermark all their works with single watermark and they just check, if the
 work from the Internet containes their watermark.
 PICTURE THAT EXPLAINES
 
-Background:
+## Background
 For theoretical simplicity, we will live in the world of 2592x1944
 grayscale images. When we consider a certain image, c_i denotes a color of
 pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w_i with watermark, so
@@ -30,7 +31,7 @@ systems. By watrmarking system we understand a pair of embedding and detecting
 algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
-E_BLIND/D_LC watermarking system:
+## E_BLIND/D_LC watermarking system
 1. watermark embedding (E_BLIND)
   wc_i = c_i + 
 2. watermark detecting (D_LC)
@@ -38,11 +39,11 @@ E_BLIND/D_LC watermarking system:
 PLACEHOLDE FOR THE WATERMARK IMAGE
 (sample watermark)
 
-Facts and definitions:
+## Facts and definitions
 c_i in 0..255 (content image)
 N = 2592x1944
 
-Main idea:
+## Main idea
 Let's consider a world of 2592x1944 images. For pixels i and j we will define a
 random variable X_{ij} that will eqaul to {1, 0, -1} depending on wether
 C_i is {greater, equal, less} that/to C_j. C_i denotes the color of the pixel i.
@@ -50,7 +51,7 @@ C_i is {greater, equal, less} that/to C_j. C_i denotes the color of the pixel i.
 C_i = The color of pixel i.
 X_{ij} = \{ 1 if C_i > C_j; 0 if C_i = C_j; -1 C_i < C_j
 
-Problems:
+## Problems
 1. File format: If you take a content and watermark them using E_BLIND
 (alpha = 1) and then you save them as JPG then it is more likely that your
 watermark won't survive a compresion and will not be visible anymore. So when I
