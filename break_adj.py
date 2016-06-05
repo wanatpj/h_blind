@@ -1,4 +1,3 @@
-import Image
 import itertools
 import numpy
 import operator
@@ -6,8 +5,7 @@ import os
 import random
 from matplotlib import pyplot
 from multiprocessing import Pool
-from pygraph.algorithms.minmax import maximum_flow
-from pygraph.classes.digraph import digraph
+from PIL import Image
 
 def linear_correlation(a, b):
   N = len(a)
@@ -29,43 +27,34 @@ def _prepare_reduction():
   global reduced
   global watermark_size
   wwidth, wheight = watermark_size
-  reduced = numpy.zeros((wwidth - 1, wheight)), numpy.zeros((wwidth, wheight - 1))
+  return numpy.zeros((wwidth - 1, wheight)), numpy.zeros((wwidth, wheight - 1))
 
-def map_reduce(data, map_fn, reduce_fn):
-  global reduced
-  _prepare_reduction()
-  pool = Pool(8)
+def map_reduce(data, map_fn, reduce_fn, reduced):
   while data:
     reduced = reduce(\
         reduce_fn,\
-        pool.map(map_fn, data[0 : 8]),\
+        map(map_fn, data[0 : 8]),\
         reduced)
     data = data[8 : ]
     print "Remaining elements for map-reduce: " + str(len(data))
+  return reduced
 
 def comparator(pixel1, pixel2):
   return 1 if pixel1 < pixel2 else 0 if pixel1 == pixel2 else -1
 
 def extract_inequalities(f):
-  global watermark_size
-  print "start"
-  wwidth, wheight = watermark_size
-  horizontal = numpy.zeros((wwidth - 1, wheight))
-  vertical = numpy.zeros((wwidth, wheight - 1))
-  print "open image"
   with Image.open("photos2/" + f) as image:
-    print "image opened"
     loaded = image.convert("L").load()
-    print "image loaded"
     width, height = image.size
+    horizontal = numpy.zeros((width - 1, height))
+    vertical = numpy.zeros((width, height - 1))
     for x in range(width - 1):
       for y in range(height):
         horizontal[x][y] = comparator(loaded[x, y], loaded[x + 1, y])
     for x in range(width):
       for y in range(height - 1):
         vertical[x][y] = comparator(loaded[x, y], loaded[x, y + 1])
-    print "image processed"
-  return horizontal, vertical
+    return horizontal, vertical
 
 def size_filter(f):
   global watermark_size
@@ -88,62 +77,6 @@ def divide_all(m, d):
   for i in range(len(m)):
     for j in range(len(m[i])):
       m[i][j] /= d
-
-def get_id(x):
-  if x == 1:
-    return 0
-  if x == -1:
-    return 1
-
-def get_id_(x, y):
-  global watermark_size
-  wwidth, wheight = watermark_size
-  return 2 + x*wheight + y
-
-def vertices():
-  global watermark_size
-  wwidth, wheight = watermark_size
-  return range(2 + wwidth*wheight)
-
-def build_graph(horizontal, vertical):
-  global watermark_size
-  global graph
-  wwidth, wheight = watermark_size
-  graph = digraph()
-  graph.add_nodes(vertices())
-  ones = {}
-  mones = {}
-  one = get_id(1)
-  mone = get_id(-1)
-  print "adding edges"
-  for x in range(wwidth - 1):
-    print x
-    for y in range(wheight):
-      i = get_id_(x, y)
-      j = get_id_(x, y + 1)
-      if horizontal[x][y] == 0:
-        graph.add_edge((i, j))
-        graph.add_edge((j, i))
-      elif horizontal[x][y] == 1:
-        ones[i] = ones[i] + 1 if i in ones else 1
-        mones[j] = mones[j] + 1 if j in mones else 1
-      elif horizontal[x][y] == -1:
-        mones[i] = mones[i] + 1 if i in mones else 1
-        ones[j] = ones[j] + 1 if j in ones else 1
-      else:
-        raise 'INCORRECT_REPRESENTATION'
-  print len(ones)
-  print len(mones)
-  cnt = 0
-  for key, value in ones.iteritems():
-    graph.add_edge((one, key), wt=value)
-    graph.add_edge((key, one), wt=value)
-    cnt += 1
-    if cnt % 1000 == 0:
-      print cnt
-  for key, value in mones.iteritems():
-    graph.add_edge((key, mone), wt=value)
-    graph.add_edge((mone, key), wt=value)
 
 def get_random_edge(width, height):
   if random.randint(0, 1) == 0:
@@ -171,9 +104,9 @@ def save_hidden_watermark():
   width, height = watermark_size
   hidden_watermark =\
       [hidden_watermark[x][y] for y in range(height) for x in range(width)]
-  bins = numpy.linspace(-2, 2, 200)
-  pyplot.hist(hidden_watermark, bins, alpha=0.5, label='hw')
-  pyplot.show()
+  #bins = numpy.linspace(-2, 2, 200)
+  #pyplot.hist(hidden_watermark, bins, alpha=0.5, label='hw')
+  #pyplot.show()
   for i in range(width * height):
     hidden_watermark[i] = -1 if hidden_watermark[i] < 0 else\
         0 if hidden_watermark[i] == 0 else 1
@@ -204,37 +137,34 @@ def save_hidden_watermark():
       .save("hidden_watermark-diff.bmp")
   horizontal, vertical = reduced
   
-
 def main():
   global graph
   global reduced
   global watermark_size
   global watermark
   global hidden_watermark
-  pool = Pool(8)
   _read_watermark()
   width, height = watermark_size
   files = os.listdir("photos2")
   files = filter(size_filter, files)
   print len(files)
-  map_reduce(files,\
+  horizontal, vertical = map_reduce(files,\
       extract_inequalities,\
-      matadd)
-  print "map reduce finished"
-  horizontal, vertical = reduced
+      matadd,
+      _prepare_reduction())
   divide_all(horizontal, float(len(files)))
   divide_all(vertical, float(len(files)))
   print "divide all finished"
-  hori =\
-      [horizontal[x][y] for y in range(height) for x in range(width - 1)]
-  verti =\
-      [vertical[x][y] for y in range(height - 1) for x in range(width)]
-  bins = numpy.linspace(-2, 2, 200)
-  pyplot.hist(hori, bins, alpha=0.5, label='hw')
-  pyplot.show()
-  bins = numpy.linspace(-2, 2, 200)
-  pyplot.hist(verti, bins, alpha=0.5, label='hw')
-  pyplot.show()
+  #hori =\
+  #    [horizontal[x][y] for y in range(height) for x in range(width - 1)]
+  #verti =\
+  #    [vertical[x][y] for y in range(height - 1) for x in range(width)]
+  #bins = numpy.linspace(-2, 2, 200)
+  #pyplot.hist(hori, bins, alpha=0.5, label='hw')
+  #pyplot.show()
+  #bins = numpy.linspace(-2, 2, 200)
+  #pyplot.hist(verti, bins, alpha=0.5, label='hw')
+  #pyplot.show()
   horizontal = map(
       lambda x: map(lambda y: -1 if y < -0.3 else 0 if y <= 0.3 else 1, x),
       horizontal)
@@ -242,7 +172,7 @@ def main():
       lambda x: map(lambda y: -1 if y < -0.3 else 0 if y <= 0.3 else 1, x),
       vertical)
   reduced = horizontal, vertical
-  iterations = 50000000
+  iterations = 5000
   wwidth, wheight = watermark_size
   prepare(wwidth, wheight)
   while iterations > 0:
@@ -263,20 +193,6 @@ def main():
           edge['y'] + 1)
     iterations -= 1
   save_hidden_watermark()
-  #print "mapping finished"
-  #build_graph(horizontal, vertical)
-  #print "graph done"
-  #sgn0 = maximum_flow(graph, get_id(1), get_id(-1))[1]
-  #sgn1 = maximum_flow(graph, get_id(-1), get_id(1))[1]
-  #guess_size = 0
-  #wwidth, wheight = watermark_size
-  #result = [0] * (wwidth * wheight)
-  #for y in range(wheight):
-  #  for x in range(wwidth):
-  #    i = get_id_(x, y)
-  #    if sgn0[i] != sgn1[i]:
-  #      result[i] = 1 if sgn0[i] == 0 else -1
-  #      guess_size += 1
   print len(filter(lambda x: x != 0, hidden_watermark)) / float(len(hidden_watermark))
   print linear_correlation(watermark, hidden_watermark)
 

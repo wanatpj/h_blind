@@ -2,7 +2,34 @@ import Image
 import os
 import numpy
 from matplotlib import pyplot
-from multiprocessing import Pool
+
+from common import *
+
+def _parse_flags():
+  global indir, outdir, watermarkfile, usecuda
+  parser = OptionParser()
+  parser.add_option("-i",
+      "--in",
+      dest="indir",
+      help="location to directory that containes images to watermark",
+      metavar="DIR")
+  parser.add_option("-w",
+      "--watermark",
+      dest="watermark",
+      help="watermark file",
+      metavar="FILE")
+  parser.add_option("-c",
+      "--usecuda",
+      dest="usecuda",
+      help="true iff should use gpu compiting (cuda)",
+      metavar="FILE")
+  (options, args) = parser.parse_args()
+  indir = options.indir
+  outdir = options.outdir
+  watermarkfile = options.watermark
+  usecuda = True\
+      if options.usecuda != None and options.usecuda.lower()[0] == 't'\
+      else False
 
 def linear_correlation(a, b):
   N = len(a)
@@ -14,26 +41,22 @@ def linear_correlation(a, b):
   return correlation / float(N)
 
 def compute_lc(f):
-  global watermark_image, watermark
+  global width, height, watermark
   image = Image.open("watermarked/" + f)
-  return linear_correlation(list(image.convert("L").getdata()), watermark), f
 
-def size_filter(f):
-  global watermark_image, watermark
-  image = Image.open("watermarked/" + f)
-  return image.size == watermark_image.size
-  
+class ComputeLinearCorrelation:
+  def __init__(self, watermark):
+    self.watermark = watermark
+  def __call__(self, f):
+    Image.open("watermarked/" + f)
+    return linear_correlation(list(image.convert("L").getdata()), watermark)
 
 def main():
-  global watermark_image, watermark
-  watermark_image = Image.open("watermark.bmp")
-  watermark = [1 if pixel == 0 else -1 for pixel in watermark_image.getdata()]
-  pool = Pool(10)
-  lclist = pool.map(compute_lc, filter(size_filter, os.listdir("watermarked")))
-  lclist = sorted(lclist)
-  print lclist
-  lclist = map(lambda x: x[0], lclist)
-  
+  global width, height, watermark
+  (width, height), watermark = get_watermark("watermark.bmp")
+  lclist = get_pool().map(
+      ComputeLinearCorrelation,
+      filter(ImageSizeFilter(size), os.listdir("watermarked")))
   bins = numpy.linspace(-2, 2, 200)
   pyplot.hist(lclist, bins, alpha=0.5, label='lc')
   pyplot.show()
