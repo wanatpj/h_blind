@@ -1,6 +1,8 @@
 import numpy
+import pycuda
 import pycuda.autoinit
 import pycuda.driver as cuda
+import pycuda.gpuarray
 from PIL import Image
 from pycuda.compiler import SourceModule
 from pycuda.elementwise import ElementwiseKernel
@@ -21,19 +23,11 @@ module = SourceModule("""
 watermark_rgb_content_kernel =\
     module.get_function("watermark_rgb_content_kernel")
 
-watermark_content_kernel = ElementwiseKernel(
-    arguments = "unsigned char* watermarked_content, "\
-        + "unsigned char* content, "\
-        + "unsigned char* watermark",
-    operation = "watermarked_content[i] = "\
-        + "min(255, max(0, content[i] + watermark[i]))",
-    name = "watermark_content")
-
 dot_product_kernel = ReductionKernel(numpy.float32,
-    neutral = "0",
+    neutral = "0.",
     reduce_expr = "a + b",
-    map_expr = "x[i] * y[i]",
-    arguments = "float* x, float* y",
+    map_expr = "x[i] * (float)y[i]",
+    arguments = "unsigned char* x, char* y",
     name = "dot_product")
 
 def prepare_gpu_array(array):
@@ -42,13 +36,12 @@ def prepare_gpu_array(array):
   cuda.memcpy_htod(gpu_array, array)
   return gpu_array
 
-def release_variable(variable):
-  cuda.free(variable)
+def prepare_gpuarray(array):
+  return pycuda.gpuarray.to_gpu(numpy.array(array))
 
 def watermark_content(infile, outfile, gpu_watermark):
   rgb_image = Image.open(infile).convert("RGB")
   cpu_rgb_image = numpy.array(rgb_image).flatten()
-  print "bytes: " + str(cpu_rgb_image.nbytes)
   if cpu_rgb_image.nbytes < 1024:
     raise Exception("naughty: too small file to make parallel computing")
   cpu_rgb_outimage = numpy.empty_like(cpu_rgb_image)
@@ -74,9 +67,12 @@ def watermark_content(infile, outfile, gpu_watermark):
   cuda.Context.synchronize()
   cuda.memcpy_dtoh(cpu_rgb_outimage, gpu_rgb_outimage)
   cuda.Context.synchronize()
-  print cpu_rgb_outimage[0:50]
   Image.fromarray(cpu_rgb_outimage
       .reshape(tuple(reversed(rgb_image.size)) + (3,))).save(outfile)
-  #cuda.free(gpu_rgb_image)
-  #cuda.free(gpu_rgb_outimage)
+  cuda.Context.synchronize()
+
+def linear_correlation(array_a, gpuarray_b):
+  gpuarray_a = prepare_gpuarray(array_a)
+  x = dot_product_kernel(gpuarray_a, gpuarray_b).get()
+  return x / float(array_a.size)
 

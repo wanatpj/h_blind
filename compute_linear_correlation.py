@@ -1,12 +1,13 @@
-import Image
 import os
 import numpy
 from matplotlib import pyplot
+from optparse import OptionParser
+from PIL import Image
 
 from common import *
 
 def _parse_flags():
-  global indir, outdir, watermarkfile, usecuda
+  global indir, referencefile, usecuda
   parser = OptionParser()
   parser.add_option("-i",
       "--in",
@@ -14,9 +15,9 @@ def _parse_flags():
       help="location to directory that containes images to watermark",
       metavar="DIR")
   parser.add_option("-w",
-      "--watermark",
-      dest="watermark",
-      help="watermark file",
+      "--reference",
+      dest="reference",
+      help="monochrome image; black pixel denotes 1, white pixel denotes -1",
       metavar="FILE")
   parser.add_option("-c",
       "--usecuda",
@@ -25,40 +26,53 @@ def _parse_flags():
       metavar="FILE")
   (options, args) = parser.parse_args()
   indir = options.indir
-  outdir = options.outdir
-  watermarkfile = options.watermark
+  referencefile = options.reference
   usecuda = True\
       if options.usecuda != None and options.usecuda.lower()[0] == 't'\
       else False
 
-def linear_correlation(a, b):
-  N = len(a)
-  if N != len(b):
-    raise 'VECTORS_WITH_DIFFERENT_LENGTH'
-  correlation = 0L
-  for i in range(N):
-    correlation += a[i]*b[i]
-  return correlation / float(N)
-
-def compute_lc(f):
-  global width, height, watermark
-  image = Image.open("watermarked/" + f)
-
 class ComputeLinearCorrelation:
-  def __init__(self, watermark):
-    self.watermark = watermark
+  def __init__(self, reference, indir):
+    self.reference = reference
+    self.indir = indir
   def __call__(self, f):
-    Image.open("watermarked/" + f)
-    return linear_correlation(list(image.convert("L").getdata()), watermark)
+    return linear_correlation(
+        numpy.array(Image.open(self.indir + "/" + f).convert("L").getdata()),
+        self.reference)
+
+class GPUComputeLinearCorrelation:
+  def __init__(self, gpu_reference, indir):
+    self.gpu_reference = gpu_reference
+    self.indir = indir
+  def __call__(self, f):
+    global cudalib
+    return cudalib.linear_correlation(
+        numpy.array(Image.open(indir + "/" + f).convert("L").getdata()),
+        self.gpu_reference)
 
 def main():
-  global width, height, watermark
-  (width, height), watermark = get_watermark("watermark.bmp")
-  lclist = get_pool().map(
-      ComputeLinearCorrelation,
-      filter(ImageSizeFilter(size), os.listdir("watermarked")))
+  global indir, referencefile, usecuda
+  _parse_flags()
+  (width, height), reference = get_watermark(referencefile)
+  if usecuda:
+    global cudalib
+    import cudalib
+    lcs = map(
+        GPUComputeLinearCorrelation(
+            cudalib.prepare_gpuarray(reference),
+            indir),
+        filter(ImageSizeFilter((width, height), indir), os.listdir(indir)))
+    print lcs
+  else:
+    lcs = get_pool().map(
+        ComputeLinearCorrelation(reference, indir),
+        filter(ImageSizeFilter((width, height), indir), os.listdir(indir)))
+    print lcs
+  print "Mean: " + str(numpy.mean(lcs))
+  print "Median: " + str(numpy.median(lcs))
+  print "Variance: " + str(numpy.var(lcs))
   bins = numpy.linspace(-2, 2, 200)
-  pyplot.hist(lclist, bins, alpha=0.5, label='lc')
+  pyplot.hist(lcs, bins, alpha=0.5, label='lc')
   pyplot.show()
 
 main()
