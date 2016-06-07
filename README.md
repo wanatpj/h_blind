@@ -25,7 +25,7 @@ PICTURE THAT EXPLAINES
 For theoretical simplicity, we will live in the world of 2592x1944
 grayscale images. When we consider a certain image, c_i denotes a color of
 pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w_i with watermark, so
-w_i in {1, -1}^{2592x1944} and (w_i = 1 iff pixel i is black).
+w_i in {1, -1}^<sup>2592x1944</sup> and (w_i = 1 iff pixel i is black).
 This kind of definition for watermark is common for some set of watermarking
 systems. By watrmarking system we understand a pair of embedding and detecting
 algorithms.
@@ -33,8 +33,16 @@ PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## E_BLIND/D_LC watermarking system
 1. watermark embedding (E_BLIND)
-  wc_i = c_i + 
+  input: c_i, w_i
+  wc_i = c_i + alpha*w_i
 2. watermark detecting (D_LC)
+  input: c_i, w_i
+  let lc = \sum_i c_i*w_i
+    in if |lc| > τ_{lc}
+      then
+        watermark detected
+      else
+        watermark undetected
 
 PLACEHOLDE FOR THE WATERMARK IMAGE
 (sample watermark)
@@ -43,13 +51,24 @@ PLACEHOLDE FOR THE WATERMARK IMAGE
 c_i in 0..255 (content image)
 N = 2592x1944
 
-## Main idea
-Let's consider a world of 2592x1944 images. For pixels i and j we will define a
-random variable X_{ij} that will eqaul to {1, 0, -1} depending on wether
-C_i is {greater, equal, less} that/to C_j. C_i denotes the color of the pixel i.
+## Breaking E_BLIND
+Firstly, let's define several random variables.
+C_i = color of pixel i
+!(/images/Ci.gif)
+!(/images/Xijdef.gif)
+Now let's generalize !(/images/Xij.gif), so we have such random variable for any image in corpus sepately. Then:
+!(/images/Yij.gif)
+where !(/images/B.gif)
+Now assume that C_i are iid.
+Method with iid and proof.
+However live is different, much convenient.
+Let's see the histogram that was generated for horizontal Y_ij on 600 photos.
+TODO generate proper histogram
+![Horizontal Y_{ij} histogram](/images/histograms/hori.png)
+No we see the peaks around -VALUE, 0, VALUE. In the "random picture model"*, we were supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are further. That's very nice phenomeon, which could be understood when we analyze the histogram for variable X_a - X_b.
+INSERT THE DIFF HISTOGRAM HERE
+I will leave that problem open, so you can understand that phenomenon yourself.
 
-C_i = The color of pixel i.
-X_{ij} = \{ 1 if C_i > C_j; 0 if C_i = C_j; -1 C_i < C_j
 
 ## Problems
 1. File format: If you take a content and watermark them using E_BLIND
@@ -57,4 +76,16 @@ X_{ij} = \{ 1 if C_i > C_j; 0 if C_i = C_j; -1 C_i < C_j
 watermark won't survive a compresion and will not be visible anymore. So when I
 use E_BLIND (alpha = 1), I save the watermarked content in BMP.
 
-If you are aware of any bugs or typos, please contact me on gmail. I have the same id as on github.
+## Running code
+Generating random watermark:
+python generate_watermark.py -o watermark
+
+Watermarking pictures with E_BLIND(alpha = 0):
+python watermark_pictures.py --in=photos --out=watermarked --watermark=watermark.bmp --usecuda=true
+
+Computing linear correlation of multiple files against a watermark:
+python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
+
+## Epilogue
+If you are aware of any bugs or typos then feel free to contact me on gmail. I have the same id as I have on github.
+
