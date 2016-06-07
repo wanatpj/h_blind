@@ -2,7 +2,6 @@ import numpy
 import pycuda
 import pycuda.autoinit
 import pycuda.driver as cuda
-import pycuda.gpuarray
 from PIL import Image
 from pycuda.compiler import SourceModule
 from pycuda.elementwise import ElementwiseKernel
@@ -23,21 +22,11 @@ module = SourceModule("""
 watermark_rgb_content_kernel =\
     module.get_function("watermark_rgb_content_kernel")
 
-dot_product_kernel = ReductionKernel(numpy.float32,
-    neutral = "0.",
-    reduce_expr = "a + b",
-    map_expr = "x[i] * (float)y[i]",
-    arguments = "unsigned char* x, char* y",
-    name = "dot_product")
-
 def prepare_gpu_array(array):
   array = numpy.array(array)
   gpu_array = cuda.mem_alloc(array.nbytes)
   cuda.memcpy_htod(gpu_array, array)
   return gpu_array
-
-def prepare_gpuarray(array):
-  return pycuda.gpuarray.to_gpu(numpy.array(array))
 
 def watermark_content(infile, outfile, gpu_watermark):
   rgb_image = Image.open(infile).convert("RGB")
@@ -70,9 +59,4 @@ def watermark_content(infile, outfile, gpu_watermark):
   Image.fromarray(cpu_rgb_outimage
       .reshape(tuple(reversed(rgb_image.size)) + (3,))).save(outfile)
   cuda.Context.synchronize()
-
-def linear_correlation(array_a, gpuarray_b):
-  gpuarray_a = prepare_gpuarray(array_a)
-  x = dot_product_kernel(gpuarray_a, gpuarray_b).get()
-  return x / float(array_a.size)
 
