@@ -24,8 +24,8 @@ PICTURE THAT EXPLAINES
 ## Background
 For theoretical simplicity, we will live in the world of 2592x1944
 grayscale images. When we consider a certain image, c_i denotes a color of
-pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w_i with watermark, so
-w_i in {1, -1}^<sup>2592x1944</sup> and (w_i = 1 iff pixel i is black).
+pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
+w_i in ${1, -1}^{2592x1944}$ and (w<sub>i</sub> = 1 iff pixel i is black).
 This kind of definition for watermark is common for some set of watermarking
 systems. By watrmarking system we understand a pair of embedding and detecting
 algorithms.
@@ -48,7 +48,7 @@ PLACEHOLDE FOR THE WATERMARK IMAGE
 (sample watermark)
 
 ## Facts and definitions
-c_i in 0..255 (content image)
+c_i in 0..255 (content image)<br/>
 N = 2592x1944
 
 ## Breaking E_BLIND
@@ -69,22 +69,26 @@ No we see the peaks around -VALUE, 0, VALUE. In the "random picture model"*, we 
 INSERT THE DIFF HISTOGRAM HERE
 I will leave that problem open, so you can understand that phenomenon yourself.
 
+## Experimental speed of convergence
 
 ## Problems
 1. File format: If you take a content and watermark them using E_BLIND
 (alpha = 1) and then you save them as JPG then it is more likely that your
 watermark won't survive a compresion and will not be visible anymore. So when I
 use E_BLIND (alpha = 1), I save the watermarked content in BMP.
+2. Understand why peaks are in -0.75, 0, 0.75
 
 ## Running code
-Generating random watermark:
+Generating random watermark:<br/>
 python generate_watermark.py -o watermark
 
-Watermarking pictures with E_BLIND(alpha = 0):
+Watermarking pictures with E_BLIND(alpha = 0):<br/>
 python watermark_pictures.py --in=photos --out=watermarked --watermark=watermark.bmp --usecuda=true
 
-Computing linear correlation of multiple files against a watermark:
+Computing linear correlation of multiple files against a watermark:<br/>
 python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
+
+## Data flow
 
 ## Epilogue
 If you are aware of any bugs or typos then feel free to contact me on gmail. I have the same id as I have on github.
