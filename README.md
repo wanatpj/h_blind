@@ -32,6 +32,7 @@ algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## E_BLIND/D_LC watermarking system
+You can read more about this watermarking system in a book [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC)
 1. watermark embedding (E_BLIND)
   input: c_i, w_i
   wc_i = c_i + alpha*w_i
