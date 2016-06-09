@@ -7,8 +7,8 @@ class ImageSizeFilter:
     self.size = size
     self.indir = indir
   def __call__(self, f):
-    image = Image.open(self.indir + "/" + f)
-    return image.size == self.size
+    with Image.open(self.indir + "/" + f) as image:
+      return image.size == self.size
 
 def get_pool():
   return Pool(cpu_count() + 2)
@@ -20,12 +20,11 @@ def get_watermark(f):
           .astype(numpy.int8)
 
 def linear_correlation(a, b):
-  a = numpy.array(a)
-  b = numpy.array(b)
   N = a.size
   if N != b.size:
     raise Exception('VECTORS_WITH_DIFFERENT_LENGTH')
-  correlation = 0L
+  correlation = 0.
   for i in range(N):
-    correlation += a[i]*long(b[i])
+    correlation += a[i]*float(b[i])
   return correlation / float(N)
+
