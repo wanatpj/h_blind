@@ -1,11 +1,13 @@
-import itertools
 import numpy
-import operator
 import os
 import random
 from matplotlib import pyplot
 from multiprocessing import Pool
+from optparse import OptionParser
 from PIL import Image
+from scipy import misc
+
+from common import *
 
 def linear_correlation(a, b):
   N = len(a)
@@ -16,24 +18,15 @@ def linear_correlation(a, b):
     correlation += a[i]*b[i]
   return correlation / float(N)
 
-def _read_watermark():
-  global watermark_size
-  global watermark
-  watermark_image = Image.open("watermark.bmp")
-  watermark_size = watermark_image.size
-  watermark = [1 if x == 0 else -1 for x in watermark_image.getdata()]
-
-def _prepare_reduction():
-  global reduced
-  global watermark_size
-  wwidth, wheight = watermark_size
+def _prepare_reduction(size):
+  wwidth, wheight = size
   return numpy.zeros((wwidth - 1, wheight)), numpy.zeros((wwidth, wheight - 1))
 
 def map_reduce(data, map_fn, reduce_fn, reduced):
-  while data:
+  while data.size != 0:
     reduced = reduce(\
         reduce_fn,\
-        map(map_fn, data[0 : 8]),\
+        get_pool().map(map_fn, data[0 : 8]),\
         reduced)
     data = data[8 : ]
     print "Remaining elements for map-reduce: " + str(len(data))
@@ -43,118 +36,145 @@ def comparator(pixel1, pixel2):
   return 1 if pixel1 < pixel2 else 0 if pixel1 == pixel2 else -1
 
 def extract_inequalities(f):
-  with Image.open("photos2/" + f) as image:
-    loaded = image.convert("L").load()
+  with Image.open(f) as image:
     width, height = image.size
+    loaded = numpy.transpose(
+        numpy.array(Image.open("watermark.bmp").convert("L").getdata())
+            .reshape((height, width)))
     horizontal = numpy.zeros((width - 1, height))
     vertical = numpy.zeros((width, height - 1))
     for x in range(width - 1):
       for y in range(height):
-        horizontal[x][y] = comparator(loaded[x, y], loaded[x + 1, y])
+        horizontal[x][y] = comparator(loaded[x][y], loaded[x + 1][y])
     for x in range(width):
       for y in range(height - 1):
-        vertical[x][y] = comparator(loaded[x, y], loaded[x, y + 1])
+        vertical[x][y] = comparator(loaded[x][y], loaded[x][y + 1])
     return horizontal, vertical
 
-def size_filter(f):
-  global watermark_size
-  with Image.open("photos2/" + f) as image:
-    result = image.size == watermark_size
-  return result
-
 def matadd(x, y):
-  x1, x2 = x
-  y1, y2 = y
-  result1 = []
-  for i in range(len(x1)):
-    result1.append(map(operator.add, x1[i], y1[i]))
-  result2 = []
-  for i in range(len(x2)):
-    result2.append(map(operator.add, x2[i], y2[i]))
-  return result1, result2
+  h1, v1 = x
+  h2, v2 = y
+  return numpy.add(h1, h2), numpy.add(v1, v2)
 
-def divide_all(m, d):
-  for i in range(len(m)):
-    for j in range(len(m[i])):
-      m[i][j] /= d
-
-def get_random_edge(width, height):
+def get_random_edge(size):
+  width, height = size
   if random.randint(0, 1) == 0:
-    return { 'typ': 0, 'x': random.randint(0, width - 2), 'y': random.randint(0, height - 1) }
+    return {
+        'type': 0,
+        'x': random.randint(0, width - 2),
+        'y': random.randint(0, height - 1) }
   else:
-    return { 'typ': 1, 'x': random.randint(0, width - 1), 'y': random.randint(0, height - 2) }
+    return {
+        'type': 1,
+        'x': random.randint(0, width - 1),
+        'y': random.randint(0, height - 2) }
 
-def prepare(width, height):
-  global hidden_watermark
-  hidden_watermark = numpy.zeros((width, height))
-
-def update(delta, x1, y1, x2, y2):
-  global hidden_watermark
-  _sum = hidden_watermark[x1][y1] + hidden_watermark[x2][y2]
+def update(watermark, delta, x1, y1, x2, y2):
+  _sum = watermark[x1][y1] + watermark[x2][y2]
   delta = min(delta, 2 - _sum)
   delta = min(delta, 2 + _sum)
-  hidden_watermark[x1][y1] = (_sum - delta)/2.
-  hidden_watermark[x2][y2] = (_sum + delta)/2.
+  watermark[x1][y1] = (_sum - delta)/2.
+  watermark[x2][y2] = (_sum + delta)/2.
 
-def save_hidden_watermark():
-  global hidden_watermark
-  global watermark
-  global watermark_size
-  global reduced
-  width, height = watermark_size
-  hidden_watermark =\
+def _parse_flags():
+  global watermarked, deduced, size, usecuda
+  parser = OptionParser()
+  parser.add_option("-i",
+      "--watermarked",
+      dest="watermarked",
+      help="location to directory that containes potentialy watermarked "\
+          + "images",
+      metavar="DIR")
+  parser.add_option("-o",
+      "--deduced",
+      dest="deduced",
+      help="a file where to save watermarked images",
+      metavar="FILE")
+  parser.add_option("-s",
+      "--size",
+      dest="size",
+      help="width x height, par example: 2592x1944",
+      metavar="SIZE")
+  parser.add_option("-c",
+      "--usecuda",
+      dest="usecuda",
+      help="true iff should use gpu compiting (cuda)",
+      metavar="FILE")
+  (options, args) = parser.parse_args()
+  watermarked = options.watermarked
+  deduced = options.deduced
+  size = tuple(map(lambda x: int(x), options.size.split('x')))
+  usecuda = True\
+      if options.usecuda != None and options.usecuda.lower()[0] == 't'\
+      else False
+
+def deduce_edge_model(files, size):
+  horizontal, vertical =\
+      map_reduce(files, extract_inequalities, matadd, _prepare_reduction(size))
+  numpy.divide(horizontal, float(len(files)))
+  numpy.divide(vertical, float(len(files)))
+  guess_edge_fn = numpy.vectorize(
+      lambda x: -1 if x < -0.3 else 0 if x <= 0.3 else 1)
+  horizontal = guess_edge_fn(horizontal)
+  vertical = guess_edge_fn(vertical)
+  return horizontal, vertical
+
+def deduce_watermark(edge_model):
+  global size
+  width, height = size
+  watermark = numpy.zeros(size)
+  horizontal, vertical = edge_model
+  iterations = 10 * width * height
+  while iterations > 0:
+    if not (iterations & 0b111111111111111111):
+      print iterations
+    edge = get_random_edge(size)
+    if edge['type'] == 0:
+      update(watermark,
+          2*horizontal[edge['x']][edge['y']],\
+          edge['x'],\
+          edge['y'],\
+          edge['x'] + 1,\
+          edge['y'])
+    else:
+      update(watermark,
+          2*vertical[edge['x']][edge['y']],\
+          edge['x'],\
+          edge['y'],\
+          edge['x'],\
+          edge['y'] + 1)
+    iterations -= 1
+  return watermark
+
+def save_hidden_watermark(hidden_watermark):
+  global deduced, size
+  width, height = size
+  hidden_watermark_stream =\
       [hidden_watermark[x][y] for y in range(height) for x in range(width)]
   #bins = numpy.linspace(-2, 2, 200)
   #pyplot.hist(hidden_watermark, bins, alpha=0.5, label='hw')
   #pyplot.show()
-  for i in range(width * height):
-    hidden_watermark[i] = -1 if hidden_watermark[i] < 0 else\
-        0 if hidden_watermark[i] == 0 else 1
-  Image\
-      .frombytes(\
-          'RGB',
-          (width, height),
-          "".join(map(
-              lambda x, y: 
-                  chr(0)*3 if x == 1 else
-                      chr(255)*3 if x == -1 else
-                      chr(0) + chr(255) + chr(0) if y == -1 else
-                      chr(0) + chr(0) + chr(255),
-              hidden_watermark,
-              watermark)))\
-      .save("hidden_watermark.bmp")
-  Image\
-      .frombytes(\
-          'RGB',
-          (width, height),
-          "".join(map(
-              lambda x, y: 
-                  chr(0)*3 if x == 0 else
-                      chr(0) + chr(255) + chr(0) if x == y else
-                      chr(255) + chr(0) + chr(0),
-              hidden_watermark,
-              watermark)))\
-      .save("hidden_watermark-diff.bmp")
-  horizontal, vertical = reduced
-  
+  hidden_watermark_stream =\
+      [chr(255)*3 if val < 0 else chr(0)*3\
+          for val in hidden_watermark_stream]
+  Image.frombytes('RGB', (width, height), "".join(hidden_watermark_stream))\
+      .save(deduced)
+
 def main():
-  global graph
-  global reduced
-  global watermark_size
-  global watermark
-  global hidden_watermark
-  _read_watermark()
-  width, height = watermark_size
-  files = os.listdir("photos2")
-  files = filter(size_filter, files)
-  print len(files)
-  horizontal, vertical = map_reduce(files,\
-      extract_inequalities,\
-      matadd,
-      _prepare_reduction())
-  divide_all(horizontal, float(len(files)))
-  divide_all(vertical, float(len(files)))
-  print "divide all finished"
+  global watermarked, deduced, size, usecuda
+  _parse_flags()
+  files = filter(
+      ImageSizeFilter(size, watermarked),
+      os.listdir(watermarked))
+  make_exact_path_fn = numpy.vectorize(lambda x: watermarked + "/" + x)
+  files = make_exact_path_fn(files)
+  if usecuda:
+    import cudalib
+    hidden_watermark = cudalib.deduce_watermark(files)
+  else:
+    edge_model = deduce_edge_model(files, size)
+    hidden_watermark = deduce_watermark(edge_model)
+  
   #hori =\
   #    [horizontal[x][y] for y in range(height) for x in range(width - 1)]
   #verti =\
@@ -165,35 +185,6 @@ def main():
   #bins = numpy.linspace(-2, 2, 200)
   #pyplot.hist(verti, bins, alpha=0.5, label='hw')
   #pyplot.show()
-  horizontal = map(
-      lambda x: map(lambda y: -1 if y < -0.3 else 0 if y <= 0.3 else 1, x),
-      horizontal)
-  vertical = map(
-      lambda x: map(lambda y: -1 if y < -0.3 else 0 if y <= 0.3 else 1, x),
-      vertical)
-  reduced = horizontal, vertical
-  iterations = 5000
-  wwidth, wheight = watermark_size
-  prepare(wwidth, wheight)
-  while iterations > 0:
-    if not (iterations & 0b111111111111111111):
-      print iterations
-    edge = get_random_edge(wwidth, wheight)
-    if edge['typ'] == 0:
-      update(2*horizontal[edge['x']][edge['y']],\
-          edge['x'],\
-          edge['y'],\
-          edge['x'] + 1,\
-          edge['y'])
-    else:
-      update(2*vertical[edge['x']][edge['y']],\
-          edge['x'],\
-          edge['y'],\
-          edge['x'],\
-          edge['y'] + 1)
-    iterations -= 1
-  save_hidden_watermark()
-  print len(filter(lambda x: x != 0, hidden_watermark)) / float(len(hidden_watermark))
-  print linear_correlation(watermark, hidden_watermark)
+  save_hidden_watermark(hidden_watermark)
 
 main()
