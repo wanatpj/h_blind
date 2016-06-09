@@ -68,8 +68,9 @@ def main():
   global indir, outdir, watermarkfile, usecuda
   _parse_flags()
   (width, height), watermark = get_watermark(watermarkfile)
-  images_to_map =\
-      filter(ImageSizeFilter((width, height), indir), os.listdir(indir))
+  images_to_map = filter(
+      ImageSizeFilter((width, height), indir),
+      map(lambda x: indir + "/" + x, os.listdir(indir)))
   if usecuda:
     global cudalib
     import cudalib
