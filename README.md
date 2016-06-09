@@ -76,7 +76,8 @@ I will leave that problem open, so you can understand that phenomenon yourself.
 (alpha = 1) and then you save them as JPG then it is more likely that your
 watermark won't survive a compresion and will not be visible anymore. So when I
 use E_BLIND (alpha = 1), I save the watermarked content in BMP.
-2. Understand why peaks are in -0.75, 0, 0.75
+2. Analysis of breaking algorithm assumes that C'^k = C^k + w. In fact, C'^k = max(0, min(255, C^k + w))
+3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
 
 ## Running code
 Generating random watermark:<br/>
