@@ -34,12 +34,15 @@ p_1 &= Pr(X^k_{ij} = 1) = Pr(C^k_i + w_i > C^k_j + w_j =\\
     &= \sum_{l=0}^{255} Pr(C^k_i + 2 > C^k_j | C^k_j = l)Pr(C^k_j = l) =\\
     &= (1 + \sum_{i=1}^{255} \frac{257-i}{256})*\frac{1}{256} =\\
     &= (1 + \frac{1}{256}*\frac{258*255}{2})*\frac{1}{256}=\frac{33151}{65536}
-        \approx 0.506
-\end{align*}\\
-\begin{align*}
+        \approx 0.506\\
 p_0 &= Pr(C^k_i + 2 = C^k_j) = \sum_{l=0}^{255} Pr(C^k_i + 2 = C^k_j | C^k_j = l)\frac{1}{256}\\
     &= \sum_{l=2}^{255} Pr(C^k_i + 2 = C^k_j | C^k_j = l)*\frac{1}{256}\\
-    &= \frac{254}{65536} \approx 0.004
+    &= \frac{254}{65536} \approx 0.004\\
+p_{-1} &= \frac{32131}{65536} \approx 0.49
 \end{align*}\\
-$p_{-1} = \frac{32131}{65536} \approx 0.49$
+$E(Y_{ij}) = E(X^k_{ij}) = \frac{255}{256}*\frac{1}{64}$\\
+In case $w_i = w_j$ then $E(Y_{ij}) = 0$\\
+In case $w_i < w_j$ then $E(Y_{ij}) = -\frac{255}{256}*\frac{1}{64}$\\
+Now it will turn out why $Y_{ij}$ was introduced. We will explore how far away
+from expected value, $Y_{ij}$ can be.
 \end{document}

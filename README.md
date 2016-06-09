@@ -25,7 +25,7 @@ PICTURE THAT EXPLAINES
 For theoretical simplicity, we will live in the world of 2592x1944
 grayscale images. When we consider a certain image, c_i denotes a color of
 pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
-w_i in ${1, -1}^{2592x1944}$ and (w<sub>i</sub> = 1 iff pixel i is black).
+w_i in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i is black).
 This kind of definition for watermark is common for some set of watermarking
 systems. By watrmarking system we understand a pair of embedding and detecting
 algorithms.
@@ -48,7 +48,7 @@ PLACEHOLDE FOR THE WATERMARK IMAGE
 (sample watermark)
 
 ## Facts and definitions
-c_i in 0..255 (content image)<br/>
+c_i in 0..255 (content image)\\
 N = 2592x1944
 
 ## Breaking E_BLIND
