@@ -25,7 +25,7 @@ PICTURE THAT EXPLAINES
 For theoretical simplicity, we will live in the world of 2592x1944
 grayscale images. When we consider a certain image, c_i denotes a color of
 pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
-w_i in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i is black).
+w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i is black).
 This kind of definition for watermark is common for some set of watermarking
 systems. By watrmarking system we understand a pair of embedding and detecting
 algorithms.
@@ -33,35 +33,31 @@ PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## E_BLIND/D_LC watermarking system
 You can read more about this watermarking system in a book [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC)
-1. watermark embedding (E_BLIND)
-  input: c_i, w_i
-  wc_i = c_i + alpha*w_i
-2. watermark detecting (D_LC)
-  input: c_i, w_i
-  let lc = \sum_i c_i*w_i
-    in if |lc| > τ_{lc}
-      then
-        watermark detected
-      else
-        watermark undetected
+1. watermark embedding (E_BLIND)<br/>
+<pre>
+  input: c<sub>i</sub>, w<sub>i</sub><br/>
+  wc<sub>i</sub> = c<sub>i</sub> + alpha*w<sub>i</sub><br/>
+</pre>
+2. watermark detecting (D_LC)<br/>
+<pre>
+  input: c<sub>i</sub>, w<sub>i</sub><br/>
+  let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub><br/>
+    in if |lc| > τ_{lc}<br/>
+      then<br/>
+        watermark detected<br/>
+      else<br/>
+        watermark undetected<br/>
+</pre>
 
 PLACEHOLDE FOR THE WATERMARK IMAGE
 (sample watermark)
 
 ## Facts and definitions
-c_i in 0..255 (content image)\\
+c_i in 0..255 (content image)<br>
 N = 2592x1944
 
 ## Breaking E_BLIND
-Firstly, let's define several random variables.
-C_i = color of pixel i
-!(/images/Ci.gif)
-!(/images/Xijdef.gif)
-Now let's generalize !(/images/Xij.gif), so we have such random variable for any image in corpus sepately. Then:
-!(/images/Yij.gif)
-where !(/images/B.gif)
-Now assume that C_i are iid.
-Method with iid and proof.
+![Horizontal Y_{ij} histogram](/images/latex/analysis.png)
 However live is different, much convenient.
 Let's see the histogram that was generated for horizontal Y_ij on 600 photos.
 TODO generate proper histogram
@@ -89,6 +85,9 @@ python watermark_pictures.py --in=photos --out=watermarked --watermark=watermark
 
 Computing linear correlation of multiple files against a watermark:<br/>
 python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
+
+Finding a watermark embedded in multiple digital works.
+python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944
 
 ## Data flow
 
