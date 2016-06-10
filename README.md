@@ -42,7 +42,8 @@ You can read more about this watermarking system in a book [Digital Watermarking
 <pre>
   input: c<sub>i</sub>, w<sub>i</sub><br/>
   let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub><br/>
-    in if |lc| > τ_{lc}<br/>
+      τ_<sub>lc</sub> = 0.7
+    in if |lc| > τ_<sub>lc</sub><br/>
       then<br/>
         watermark detected<br/>
       else<br/>
@@ -57,7 +58,7 @@ c_i in 0..255 (content image)<br>
 N = 2592x1944
 
 ## Breaking E_BLIND
-![Horizontal Y_{ij} histogram](/images/latex/analysis.png)
+![Horizontal Y_{ij} histogram](/latex/analysis.png)
 However live is different, much convenient.
 Let's see the histogram that was generated for horizontal Y_ij on 600 photos.
 TODO generate proper histogram
