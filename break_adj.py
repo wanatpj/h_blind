@@ -39,7 +39,7 @@ def extract_inequalities(f):
   with Image.open(f) as image:
     width, height = image.size
     loaded = numpy.transpose(
-        numpy.array(Image.open("watermark.bmp").convert("L").getdata())
+        numpy.array(image.convert("L").getdata())
             .reshape((height, width)))
     horizontal = numpy.zeros((width - 1, height))
     vertical = numpy.zeros((width, height - 1))
