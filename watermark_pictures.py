@@ -70,7 +70,7 @@ def main():
   (width, height), watermark = get_watermark(watermarkfile)
   images_to_map = filter(
       ImageSizeFilter((width, height), indir),
-      map(lambda x: indir + "/" + x, os.listdir(indir)))
+      os.listdir(indir))
   if usecuda:
     global cudalib
     import cudalib
