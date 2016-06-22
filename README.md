@@ -31,6 +31,13 @@ systems. By watrmarking system we understand a pair of embedding and detecting
 algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
+## Definitions
+c, c<sup>k</sup> - content image, k-th content image
+c<sub>i</sub> in 0..255 - value of pixel i in image c<br/>
+C - random variable that denotes an image<br/>
+N = 2592x1944<br/>
+B = number of images
+
 ## E_BLIND/D_LC watermarking system
 You can read more about this watermarking system in a book
 [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
@@ -51,12 +58,10 @@ You can read more about this watermarking system in a book
         watermark undetected
 </pre>
 
-PLACEHOLDE FOR THE WATERMARK IMAGE
-(sample watermark)
-
-## Facts and definitions
-c<sub>i</sub> in 0..255 (content image)<br/>
-N = 2592x1944
+<figure>
+![Sample watermark](/watermark.bmp)
+<figcaption>Fig 1. Sample watermark</figcaption>
+</figure>
 
 ## Breaking E_BLIND
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
