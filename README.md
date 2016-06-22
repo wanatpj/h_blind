@@ -58,10 +58,8 @@ You can read more about this watermarking system in a book
         watermark undetected
 </pre>
 
-<figure>
-![Sample watermark](/watermark.bmp)
-<figcaption>Fig 1. Sample watermark</figcaption>
-</figure>
+![Sample watermark](/watermark.bmp)<br/>
+Sample watermark
 
 ## Breaking E_BLIND
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
