@@ -9,33 +9,14 @@ from scipy import misc
 
 from common import *
 
-def linear_correlation(a, b):
-  N = len(a)
-  if N != len(b):
-    raise 'VECTORS_WITH_DIFFERENT_LENGTH'
-  correlation = 0L
-  for i in range(N):
-    correlation += a[i]*b[i]
-  return correlation / float(N)
-
 def _prepare_reduction(size):
   wwidth, wheight = size
   return numpy.zeros((wwidth - 1, wheight)), numpy.zeros((wwidth, wheight - 1))
 
-def map_reduce(data, map_fn, reduce_fn, reduced):
-  while data.size != 0:
-    reduced = reduce(\
-        reduce_fn,\
-        get_pool().map(map_fn, data[0 : 8]),\
-        reduced)
-    data = data[8 : ]
-    print "Remaining elements for map-reduce: " + str(len(data))
-  return reduced
-
-def comparator(pixel1, pixel2):
+def delta(pixel1, pixel2):
   return 1 if pixel1 < pixel2 else 0 if pixel1 == pixel2 else -1
 
-def extract_inequalities(f):
+def extract_delta(f):
   with Image.open(f) as image:
     width, height = image.size
     loaded = numpy.transpose(
@@ -45,10 +26,10 @@ def extract_inequalities(f):
     vertical = numpy.zeros((width, height - 1))
     for x in range(width - 1):
       for y in range(height):
-        horizontal[x][y] = comparator(loaded[x][y], loaded[x + 1][y])
+        horizontal[x][y] = delta(loaded[x][y], loaded[x + 1][y])
     for x in range(width):
       for y in range(height - 1):
-        vertical[x][y] = comparator(loaded[x][y], loaded[x][y + 1])
+        vertical[x][y] = delta(loaded[x][y], loaded[x][y + 1])
     return horizontal, vertical
 
 def matadd(x, y):
@@ -73,6 +54,8 @@ def update(watermark, delta, x1, y1, x2, y2):
   _sum = watermark[x1][y1] + watermark[x2][y2]
   delta = min(delta, 2 - _sum)
   delta = min(delta, 2 + _sum)
+  delta = max(delta, -2 - _sum)
+  delta = max(delta, -2 + _sum)
   watermark[x1][y1] = (_sum - delta)/2.
   watermark[x2][y2] = (_sum + delta)/2.
 
@@ -110,7 +93,7 @@ def _parse_flags():
 
 def deduce_edge_model(files, size):
   horizontal, vertical =\
-      map_reduce(files, extract_inequalities, matadd, _prepare_reduction(size))
+      map_reduce(files, extract_delta, matadd, _prepare_reduction(size))
   numpy.divide(horizontal, float(len(files)))
   numpy.divide(vertical, float(len(files)))
   guess_edge_fn = numpy.vectorize(
@@ -119,8 +102,7 @@ def deduce_edge_model(files, size):
   vertical = guess_edge_fn(vertical)
   return horizontal, vertical
 
-def deduce_watermark(edge_model):
-  global size
+def deduce_watermark(size, edge_model):
   width, height = size
   watermark = numpy.zeros(size)
   horizontal, vertical = edge_model
@@ -144,20 +126,16 @@ def deduce_watermark(edge_model):
           edge['x'],\
           edge['y'] + 1)
     iterations -= 1
-  return watermark
+  return numpy\
+      .array([watermark[x][y] for y in range(height) for x in range(width)])
 
 def save_hidden_watermark(hidden_watermark):
   global deduced, size
   width, height = size
   hidden_watermark_stream =\
-      [hidden_watermark[x][y] for y in range(height) for x in range(width)]
-  #bins = numpy.linspace(-2, 2, 200)
-  #pyplot.hist(hidden_watermark, bins, alpha=0.5, label='hw')
-  #pyplot.show()
-  hidden_watermark_stream =\
-      [chr(255)*3 if val < 0 else chr(0)*3\
-          for val in hidden_watermark_stream]
-  Image.frombytes('RGB', (width, height), "".join(hidden_watermark_stream))\
+      [chr(255) if val < 0 else chr(0) for val in hidden_watermark]
+  Image.frombytes('L', (width, height), "".join(hidden_watermark_stream))\
+      .convert('1')\
       .save(deduced)
 
 def main():
@@ -170,10 +148,11 @@ def main():
   files = make_exact_path_fn(files)
   if usecuda:
     import cudalib
-    hidden_watermark = cudalib.deduce_watermark(files)
+    hidden_watermark = cudalib.deduce_watermark(size, files)
   else:
     edge_model = deduce_edge_model(files, size)
-    hidden_watermark = deduce_watermark(edge_model)
+    hidden_watermark = deduce_watermark(size, edge_model)
+  width, height = size
   
   #hori =\
   #    [horizontal[x][y] for y in range(height) for x in range(width - 1)]
