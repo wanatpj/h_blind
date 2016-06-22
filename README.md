@@ -23,7 +23,7 @@ PICTURE THAT EXPLAINES
 
 ## Background
 For theoretical simplicity, we will live in the world of 2592x1944
-grayscale images. When we consider a certain image, c_i denotes a color of
+grayscale images. When we consider a certain image, c<sub>i</sub> denotes a color of
 pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
 w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i is black).
 This kind of definition for watermark is common for some set of watermarking
@@ -32,38 +32,39 @@ algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## E_BLIND/D_LC watermarking system
-You can read more about this watermarking system in a book [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC)
+You can read more about this watermarking system in a book
+[Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
 1. watermark embedding (E_BLIND)<br/>
 <pre>
-  input: c<sub>i</sub>, w<sub>i</sub><br/>
-  wc<sub>i</sub> = c<sub>i</sub> + alpha*w<sub>i</sub><br/>
+  input: c<sub>i</sub>, w<sub>i</sub>
+  wc<sub>i</sub> = c<sub>i</sub> + alpha*w<sub>i</sub>
 </pre>
 2. watermark detecting (D_LC)<br/>
 <pre>
-  input: c<sub>i</sub>, w<sub>i</sub><br/>
-  let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub><br/>
+  input: c<sub>i</sub>, w<sub>i</sub>
+  let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub>
       τ_<sub>lc</sub> = 0.7
-    in if |lc| > τ_<sub>lc</sub><br/>
-      then<br/>
-        watermark detected<br/>
-      else<br/>
-        watermark undetected<br/>
+    in if |lc| > τ_<sub>lc</sub>
+      then
+        watermark detected
+      else
+        watermark undetected
 </pre>
 
 PLACEHOLDE FOR THE WATERMARK IMAGE
 (sample watermark)
 
 ## Facts and definitions
-c_i in 0..255 (content image)<br>
+c<sub>i</sub> in 0..255 (content image)<br/>
 N = 2592x1944
 
 ## Breaking E_BLIND
-![Horizontal Y_{ij} histogram](/latex/analysis.png)
+![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 However live is different, much convenient.
-Let's see the histogram that was generated for horizontal Y_ij on 600 photos.
+Let's see the histogram that was generated for horizontal Y<sub>ij</sub> on around 650 photos.
 TODO generate proper histogram
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)
-No we see the peaks around -VALUE, 0, VALUE. In the "random picture model"*, we were supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are further. That's very nice phenomeon, which could be understood when we analyze the histogram for variable X_a - X_b.
+No we see the peaks around -VALUE, 0, VALUE. In the "random picture model"*, we were supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are further. That's very nice phenomeon, which could be understood when we analyze the histogram for variable X<sub>a</sub> - X<sub>b</sub>.
 INSERT THE DIFF HISTOGRAM HERE
 I will leave that problem open, so you can understand that phenomenon yourself.
 
@@ -74,7 +75,7 @@ I will leave that problem open, so you can understand that phenomenon yourself.
 (alpha = 1) and then you save them as JPG then it is more likely that your
 watermark won't survive a compresion and will not be visible anymore. So when I
 use E_BLIND (alpha = 1), I save the watermarked content in BMP.
-2. Analysis of breaking algorithm assumes that C'^k = C^k + w. In fact, C'^k = max(0, min(255, C^k + w))
+2. Analysis of breaking algorithm assumes that C'<sup>k</sup> = C<sup>k</sup> + w. In fact, C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
 3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
 
 ## Running code
@@ -88,7 +89,7 @@ Computing linear correlation of multiple files against a watermark:<br/>
 python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
 
 Finding a watermark embedded in multiple digital works.
-python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944
+python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944 --usecuda=true
 
 ## Data flow
 
