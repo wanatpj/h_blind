@@ -4,7 +4,7 @@ Extraction of watermark embedded with E_BLIND method on multiple digital picture
 ## Objective
 E_BLIND is no longer good way to watermark set of images. You can still watermark one or two, but not more with the same watermark. Or you can still have the set of watermarks, but do not group pictures with the same watermark.
 
-## Introduction
+## Introduction - motivation for watermarks
 Film production company makes a film. They claim that their new movie is
 awesome. However, they want to make money, so they want people to pay for
 watching them in cinema. Life is tough and nobody will pay for a bad movie.
@@ -32,13 +32,33 @@ algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## Definitions
+<verbatim>
 c, c<sup>k</sup> - content image, k-th content image
-c<sub>i</sub> in 0..255 - value of pixel i in image c<br/>
-C - random variable that denotes an image<br/>
-N = 2592x1944<br/>
+c<sub>i</sub> in 0..255 - value of pixel i in image c
+C - random variable that denotes an image
+N = 2592x1944
 B = number of images
+lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
+    if length(A) == length(B) else raise Exception()
+</verbatim>
 
 ## E_BLIND/D_LC watermarking system
+In this watermark system, the
+[standard black/white image](https://github.com/wanatpj/h_blind#background) is
+used, as watermark. As mentioned before, black is 1, white is -1. The embeding
+algorithm is sumation of two matrices. So any pixel in watermarked content will
+differ by 1 from the original pixel.<br/>
+Now, a linear correlation between watermark and watermark itself is 1.<br/>
+A linear correlation between watermark and <b>un</b>watermarked content is
+around 0. Why? Assuming that watermark is random then dot product of c and w
+is random walk arround 0 and it's expected value is upper bounded by
+const*sqrt(N) and so the expected value of linear correlation is bounded by
+const/sqrt(N).<br/>
+Then a linear correlation between watermark and watermarked content is around
+1.<br/>
+The detecting algorithm checks linear correlation between being verified content
+and watermark and in case it reaches some threshold then it reports a
+detection.<br/>
 You can read more about this watermarking system in a book
 [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
 1. watermark embedding (E_BLIND)<br/>
