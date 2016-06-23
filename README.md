@@ -36,7 +36,7 @@ PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub> in 0..255 - value of pixel i in image c
 C - random variable that denotes an image
-N = 2592x1944
+N = 2592*1944
 B = number of images
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
@@ -61,12 +61,12 @@ and watermark and in case it reaches some threshold then it reports a
 detection.<br/>
 You can read more about this watermarking system in a book
 [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
-1. watermark embedding (E_BLIND)<br/>
+### Watermark embedding (E_BLIND)<br/>
 <pre>
   input: c<sub>i</sub>, w<sub>i</sub>
   wc<sub>i</sub> = c<sub>i</sub> + alpha*w<sub>i</sub>
 </pre>
-2. watermark detecting (D_LC)<br/>
+### Watermark detecting (D_LC)<br/>
 <pre>
   input: c<sub>i</sub>, w<sub>i</sub>
   let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub>
@@ -85,21 +85,13 @@ Sample watermark
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 However live is different, much convenient.
 Let's see the histogram that was generated for horizontal Y<sub>ij</sub> on around 650 photos.
-TODO generate proper histogram
-![Horizontal Y_{ij} histogram](/images/histograms/hori.png)
-No we see the peaks around -VALUE, 0, VALUE. In the "random picture model"*, we were supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are further. That's very nice phenomeon, which could be understood when we analyze the histogram for variable X<sub>a</sub> - X<sub>b</sub>.
-INSERT THE DIFF HISTOGRAM HERE
-I will leave that problem open, so you can understand that phenomenon yourself.
+#### TODO GENERATE PROPER HISTOGRAM
+![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
+We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are further. That's very nice phenomeon, which could be understood when we analyze the histogram for variable X<sub>a</sub> - X<sub>b</sub>.
+#### TODO INSERT THE DIFF HISTOGRAM HERE
 
 ## Experimental speed of convergence
-
-## Problems
-1. File format: If you take a content and watermark them using E_BLIND
-(alpha = 1) and then you save them as JPG then it is more likely that your
-watermark won't survive a compresion and will not be visible anymore. So when I
-use E_BLIND (alpha = 1), I save the watermarked content in BMP.
-2. Analysis of breaking algorithm assumes that C'<sup>k</sup> = C<sup>k</sup> + w. In fact, C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
-3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
+#### TODO generate speed of convergence for GPU and CPU. Explain the difference
 
 ## Running code
 Generating random watermark:<br/>
@@ -115,7 +107,20 @@ Finding a watermark embedded in multiple digital works.
 python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944 --usecuda=true
 
 ## Data flow
+#### TODO add execution schema as blocks for "Running code" section
+
+## Speed comparision between CPU and GPU
+#### TODO add array that shows GPU speedup
+
+## Problems
+1. File format: If you take a content and watermark them using E_BLIND
+(alpha = 1) and then you save them as JPG then it is more likely that your
+watermark won't survive a compresion and will not be visible anymore. So when I
+use E_BLIND (alpha = 1), I save the watermarked content in BMP.
+2. Analysis of breaking algorithm assumes that C'<sup>k</sup> = C<sup>k</sup> + w. In fact, C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
+3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
 
 ## Epilogue
+#### TODO add a note how to use E_BLIND to resile from this attack
 If you are aware of any bugs or typos then feel free to contact me on gmail. I have the same id as I have on github.
 
