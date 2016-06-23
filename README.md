@@ -32,7 +32,7 @@ algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## Definitions
-<verbatim>
+<pre>
 c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub> in 0..255 - value of pixel i in image c
 C - random variable that denotes an image
@@ -40,7 +40,7 @@ N = 2592x1944
 B = number of images
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
-</verbatim>
+</pre>
 
 ## E_BLIND/D_LC watermarking system
 In this watermark system, the
