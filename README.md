@@ -12,7 +12,7 @@ Thus the company wants to send the movie to several film critics, so they
 give a good recommendation and so they could earn money. However the company is
 afraid that if they share the movie with some critic then they could share the movie onwards. To prevent critic from sharing, the company can watermark the
 movie, so they will know who made a leak in case of any.
-PLACEHOLDER FOR ANIMATION
+![Leak by critic](/images/simple-leak-detection.svg)<br/>
 
 Film production company makes movies. They already have big portfolio that contains hundreds of digital works. They know that from time to time some
 malicious person uploads their works to YouTube. They are very sad about that.
