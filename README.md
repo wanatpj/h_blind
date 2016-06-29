@@ -2,7 +2,9 @@
 Extraction of watermark embedded with E_BLIND method on multiple digital pictures.
 
 ## Objective
-E_BLIND is no longer good way to watermark set of images. You can still watermark one or two, but not more with the same watermark. Or you can still have the set of watermarks, but do not group pictures with the same watermark.
+E_BLIND is no longer good way to watermark set of images. You can still
+watermark one or two, but not more with the same watermark. You still can have a
+ small set of watermarks, but do not group pictures with the same watermark.
 
 ## Introduction - motivation for watermarks
 Film production company makes a film. They claim that their new movie is
@@ -10,25 +12,46 @@ awesome. However, they want to make money, so they want people to pay for
 watching them in cinema. Life is tough and nobody will pay for a bad movie.
 Thus the company wants to send the movie to several film critics, so they
 give a good recommendation and so they could earn money. However the company is
-afraid that if they share the movie with some critic then they could share the movie onwards. To prevent critic from sharing, the company can watermark the
+afraid that if they share the movie with some critic then they could share the
+movie onwards. To prevent critic from sharing, the company can watermark the
 movie, so they will know who made a leak in case of any.
-![Leak by critic](/images/simple-leak-detection.png)<br/>
+![Leak by critic](/images/simple-leak-detection.png)
 
-Film production company makes movies. They already have big portfolio that contains hundreds of digital works. They know that from time to time some
+Film production company makes movies. They already have big portfolio that
+contains hundreds of digital works. They know that from time to time some
 malicious person uploads their works to YouTube. They are very sad about that.
 Verifying that a single work found in the Internet belongs to them is costly, so
+before any release
 they watermark all their works with single watermark and they just check, if the
 work from the Internet containes their watermark.
-PICTURE THAT EXPLAINES
+![Fast tracking of images](/images/watermark-tracking.png)
+
+Film production company made a movie. They want to sell their movie to some
+end users, via cinemas, Google Play or Amazon. They are afraid that some end
+user will find a way to download the content and then share it somewhere in the
+Internet. They want to secure themself, so they always can identify the end user
+who made a leak. They decided that they will watermark the movie before sending
+to any broker and they ask the brokers to watermark it again before sending to
+any user. When the leak occur, the company will identify the broker and the
+broker will identify the end user.
+#### TODO PICTURE THAT EXPLAINES
+
+#### Legal Remark
+I do not have and I never did have any knowledge, if any watermarking
+system is used in such ways. I giving this note, cause I'm a Xoogler and I still
+have confidentiality agreement with Google. Google Play and Amazon appear here
+to give a reader better understaning. It's not a hidden ad. I've never got any
+knowledge from this area, while I was working at Google.
 
 ## Background
 For theoretical simplicity, we will live in the world of 2592x1944
-grayscale images. When we consider a certain image, c<sub>i</sub> denotes a color of
-pixel i. We call an image to be a watermark if it consists of black or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
-w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i is black).
-This kind of definition for watermark is common for some set of watermarking
-systems. By watrmarking system we understand a pair of embedding and detecting
-algorithms.
+grayscale images. When we consider a certain image, c<sub>i</sub> denotes
+a color of pixel i. We call an image to be a watermark if it consists of black
+or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
+w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i
+is black). This kind of definition for watermark is common for some set of
+watermarking systems. By watrmarking system we understand a pair of embedding
+and detecting algorithms.
 PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
 
 ## Definitions
