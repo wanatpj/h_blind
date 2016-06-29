@@ -34,7 +34,7 @@ who made a leak. They decided that they will watermark the movie before sending
 to any broker and they ask the brokers to watermark it again before sending to
 any user. When the leak occur, the company will identify the broker and the
 broker will identify the end user.
-#### TODO PICTURE THAT EXPLAINES
+![Leak by end user](/images/leak-detection-with-a-broker.png)
 
 #### Legal Remark
 I do not have and I never did have any knowledge, if any watermarking
@@ -52,7 +52,7 @@ w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i
 is black). This kind of definition for watermark is common for some set of
 watermarking systems. By watrmarking system we understand a pair of embedding
 and detecting algorithms.
-PLACEHOLDER FOR IMAGE WHICH DESCRIBES HOW EMBEDDER AND DETECTOR WORK
+![Embedding/detecting algorithm](/images/embedding-detecting-algorithm.png)
 
 ## Definitions
 <pre>
