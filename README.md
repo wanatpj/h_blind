@@ -38,10 +38,10 @@ broker will identify the end user.
 
 #### Legal Remark
 I do not have and I never did have any knowledge, if any watermarking
-system is used in such ways. I giving this note, cause I'm a Xoogler and I still
-have confidentiality agreement with Google. Google Play and Amazon appear here
-to give a reader better understaning. It's not a hidden ad. I've never got any
-knowledge from this area, while I was working at Google.
+system is used in such ways. I'm giving this note, cause I'm a Xoogler and I
+still have confidentiality agreement with Google. Google Play and Amazon appear
+here to give a reader better understaning. It's not a hidden ad. I've never
+obtain any knowledge from this area, while I was working at Google.
 
 ## Background
 For theoretical simplicity, we will live in the world of 2592x1944
