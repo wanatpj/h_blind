@@ -27,21 +27,14 @@ work from the Internet containes their watermark.
 ![Fast tracking of images](/images/watermark-tracking.png)
 
 Film production company made a movie. They want to sell their movie to some
-end users, via cinemas, Google Play or Amazon. They are afraid that some end
-user will find a way to download the content and then share it somewhere in the
+end users, via cinemas or other film brokers. They are afraid that some end user
+will find a way to download the content and then share it somewhere in the
 Internet. They want to secure themself, so they always can identify the end user
 who made a leak. They decided that they will watermark the movie before sending
 to any broker and they ask the brokers to watermark it again before sending to
 any user. When the leak occur, the company will identify the broker and the
 broker will identify the end user.
 ![Leak by end user](/images/leak-detection-with-a-broker.png)
-
-#### Legal Remark
-I do not have and I never did have any knowledge, if any watermarking
-system is used in such ways. I'm giving this note, cause I'm a Xoogler and I
-still have confidentiality agreement with Google. Google Play and Amazon appear
-here to give a reader better understaning. It's not a hidden ad. I've never
-obtain any knowledge from this area, while I was working at Google.
 
 ## Background
 For theoretical simplicity, we will live in the world of 2592x1944
