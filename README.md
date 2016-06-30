@@ -47,7 +47,7 @@ watermarking systems. By watrmarking system we understand a pair of embedding
 and detecting algorithms.
 ![Embedding/detecting algorithm](/images/embedding-detecting-algorithm.png)
 
-## Definitions
+## Definitions and lemmas
 <pre>
 c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub> in 0..255 - value of pixel i in image c
@@ -56,6 +56,7 @@ N = 2592*1944
 B = number of images
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
+Chebyshev's inequality: Pr(|X-E(X)| >= eps) = Var(X)/(eps^2)
 </pre>
 
 ## E_BLIND/D_LC watermarking system
@@ -93,9 +94,8 @@ You can read more about this watermarking system in a book
       else
         watermark undetected
 </pre>
-
-![Sample watermark](/watermark.bmp)<br/>
-Sample watermark
+Sample watermark:
+![Sample watermark](/watermark.bmp)
 
 ## Breaking E_BLIND
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
@@ -122,9 +122,6 @@ python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
 Finding a watermark embedded in multiple digital works.
 python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944 --usecuda=true
 
-## Data flow
-#### TODO add execution schema as blocks for "Running code" section
-
 ## Speed comparision between CPU and GPU
 #### TODO add array that shows GPU speedup
 
@@ -137,6 +134,9 @@ use E_BLIND (alpha = 1), I save the watermarked content in BMP.
 3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
 
 ## Epilogue
-#### TODO add a note how to use E_BLIND to resile from this attack
+You can make E_BLIND resistant from this attack if you have a set of watermarks
+and you always pick a watermark at random before watermarking any single
+picture or in case you are watermarking movie then you should pick a watermark
+at random for any frame.<br/>
 If you are aware of any bugs or typos then feel free to contact me on gmail. I have the same id as I have on github.
 
