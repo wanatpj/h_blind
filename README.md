@@ -122,6 +122,9 @@ python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
 Finding a watermark embedded in multiple digital works.
 python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944 --usecuda=true
 
+Generating histogram for differences between adjacent pixels:
+python diffenerce_histogram.py --in=photos/  --rangeradius=30
+
 ## Speed comparision between CPU and GPU
 #### TODO add array that shows GPU speedup
 
