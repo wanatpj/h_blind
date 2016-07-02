@@ -1,41 +1,33 @@
 import Image
 import matplotlib.pyplot as plt
 import numpy
-import operator
 import os
-from multiprocessing import Pool
+from optparse import OptionParser
 
-def _prepare_reduction():
-  global reduced
-  reduced = []
+from common import *
 
-def size_filter(f):
-  global watermark_size
-  with Image.open("photos2/" + f) as image:
-    result = image.size == watermark_size
-  return result
-
-def _read_watermark():
-  global watermark_size
-  global watermark
-  watermark_image = Image.open("watermark.bmp")
-  watermark_size = watermark_image.size
-  watermark = watermark_image.load()
-
-def map_reduce(data, map_fn, reduce_fn):
-  global reduced
-  _prepare_reduction()
-  pool = Pool(8)
-  while data:
-    reduced = reduce(\
-        reduce_fn,\
-        pool.map(map_fn, data[0 : 8]),\
-        reduced)
-    data = data[8 : ]
-    print "Remaining elements for map-reduce: " + str(len(data))
+def _parse_flags():
+  global indir, rangeradius
+  parser = OptionParser()
+  parser.add_option("-i",
+      "--in",
+      dest="indir",
+      help="directory that containes images for which the difference histogram"\
+          + " will be computed",
+      metavar="DIR")
+  parser.add_option("-r",
+      "--rangeradius",
+      dest="rangeradius",
+      help="range of the histogram",
+      metavar="NUMBER")
+  (options, args) = parser.parse_args()
+  if not options.indir or not options.rangeradius:
+    parser.error('Not all flags specified; run with --help to see the flags;')
+  indir = options.indir
+  rangeradius = int(options.rangeradius)
 
 def extract_differences(f):
-  with Image.open("photos2/" + f) as image:
+  with Image.open(f) as image:
     width, height = image.size
     result = []
     img = image.convert("L").load()
@@ -47,17 +39,22 @@ def extract_differences(f):
         result.append(img[x, y] - img[x, y + 1])
   return result
 
+def histogram_reduce(histogram, values):
+  for value in values:
+    histogram[value + 255] += 1
+  return histogram
+
 def main():
-  global reduced
-  _read_watermark()
-  files = os.listdir("photos2")
-  files = filter(size_filter, files)
-  print len(files)
-  map_reduce(files,\
+  global indir, rangeradius
+  _parse_flags()
+  normalize_file_names_fn = numpy.vectorize(lambda x: indir + "/" + x)
+  result = map_reduce(normalize_file_names_fn(os.listdir(indir)),\
       extract_differences,\
-      operator.add)
-  print reduced.count(0)
-  plt.hist(reduced, numpy.linspace(-40, 40, 80))
+      histogram_reduce,
+      numpy.zeros(256 + 255, dtype=numpy.uint64))
+  plt.bar(numpy.arange(-rangeradius, rangeradius + 1),
+      result[255 - rangeradius : 255 + rangeradius + 1],
+      align='center')
   plt.show()
 
 main()
