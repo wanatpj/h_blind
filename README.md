@@ -101,7 +101,7 @@ Sample watermark:
 ## Breaking E_BLIND
 The algorithm will have two steps:
   1. Deduction of edge model.
-  2. Deduction of watermark form the edge model.
+  2. Deduction of a watermark form the edge model.
 
 Let's define a graph. The set of vertices will corespond to pixels. Let's remind
 that we consider images of certain size, so the number of vertices is set. There
