@@ -119,10 +119,10 @@ python watermark_pictures.py --in=photos --out=watermarked --watermark=watermark
 Computing linear correlation of multiple files against a watermark:<br/>
 python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
 
-Finding a watermark embedded in multiple digital works.
+Finding a watermark embedded in multiple digital works:<br/>
 python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944 --usecuda=true
 
-Generating histogram for differences between adjacent pixels:
+Generating histogram for differences between adjacent pixels:<br/>
 python diffenerce_histogram.py --in=photos/  --rangeradius=30
 
 ## Speed comparision between CPU and GPU
