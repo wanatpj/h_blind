@@ -113,7 +113,7 @@ We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were 
 Generating random watermark:<br/>
 python generate_watermark.py -o watermark
 
-Watermarking pictures with E_BLIND(alpha = 0):<br/>
+Watermarking pictures with E_BLIND(alpha = 1):<br/>
 python watermark_pictures.py --in=photos --out=watermarked --watermark=watermark.bmp --usecuda=true
 
 Computing linear correlation of multiple files against a watermark:<br/>
