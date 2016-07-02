@@ -49,6 +49,7 @@ and detecting algorithms.
 
 ## Definitions and lemmas
 <pre>
+iff := if and only if
 c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub> in 0..255 - value of pixel i in image c
 C - random variable that denotes an image
@@ -98,13 +99,34 @@ Sample watermark:
 ![Sample watermark](/watermark.bmp)
 
 ## Breaking E_BLIND
+The algorithm will have two steps:
+1. Deduction of edge model.
+2. Deduction of watermark form the edge model.
+Let's define a graph. The set of vertices will corespond to pixels. Let's remind
+that we consider images of certain size, so the number of vertices is set. There
+will be an edge between two vertices iff the coresponding pixels are adjacent.
+For every edge (i, j) we want to claim value delta(i, j) that will denote our
+guess about the watermark difference on pixel i and j, i.e.
+w<sub>i</sub> + delta(i, j) = w<sub>j</sub>. So by deduction of edge model, we
+understand that given the set of photos with tha same watermark we guess
+delta(i, j). Having delta(i, j) we go to step 2 and we try to deduce
+w<sub>i</sub>.
+### Deduction of edge model
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 However live is different, much convenient.
 Let's see the histogram that was generated for horizontal Y<sub>ij</sub> on around 650 photos.
 #### TODO GENERATE PROPER HISTOGRAM
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
-We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are further. That's very nice phenomeon, which could be understood when we analyze the histogram for variable X<sub>a</sub> - X<sub>b</sub>.
-#### TODO INSERT THE DIFF HISTOGRAM HERE
+We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were
+supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are
+further. That's very nice phenomeon, which could be understood when we analyze
+the histogram for variable X<sub>a</sub> - X<sub>b</sub>. It turns out that a
+distribution of |X<sub>a</sub> - X<sub>b</sub>| looks like exponential. 
+Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 unwatermarked JPG pictures:
+![X_a-X_b not watermarked](/images/histograms/diff_hist_no_water_4pics.png)
+Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 watermarked JPG pictures:
+![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)
+### Deduction of watermark form the edge model
 
 ## Experimental speed of convergence
 #### TODO generate speed of convergence for GPU and CPU. Explain the difference
