@@ -1,5 +1,6 @@
 \documentclass[varwidth]{standalone}
 \usepackage{amsmath}
+\usepackage{mathtools}
 \begin{document}
 Let $C^k_i$ be the colour of pixel $i$ on image $k$.\\
 $X^k_{ij} =
@@ -62,9 +63,21 @@ In case $w_i < w_j$ then\\
 E(Y_{ij}) &= -\frac{255}{256}*\frac{1}{64}\\
 Var(Y_{ij}) &= \frac{p_1 + p_{-1} + (p_1-p_{-1})^2}{B} \approx \frac{0.996}{B}
 \end{align*}
-Now, we will explore how far away from the expected value, $Y_{ij}$ can be.
-Using Chebyshev inequality we have:
+Having the expected values of $Y_{ij}$ computed we obtained a natural predicate
+that will tell us how the edge model should look like. Basically, we will
+claim:\\
+$delta(i, j) = \left\{
+  \begin{matrix*}[l]
+    2&\text{, if } Y_{ij} < -\tau\\
+    0&\text{, if } -\tau <= Y_{ij} <= \tau\\
+    -2&\text{, if } \tau < Y_{ij}
+  \end{matrix*}\right.$ , where $\tau = \frac{p_1 - p_{-1}}{2}$\\
+Now, it is crucial to figure out how good is the predicate. To get this we will
+compute $Pr(|Y_{ij} - E(Y_{ij})| >= \tau)$. If it is small then the edge model
+is approximated well. Let's apply Chebyshev inequality:
 \begin{align*}
-Pr(|Y_{ij} - E(Y_{ij})| \geq)
+Pr(|Y_{ij} - E(Y_{ij})| \geq \tau) &\leq \frac{Var(Y_{ij})}{\tau^2}\\
+  & \leq \frac{1}{B\tau^2}\\
+  & \leq \frac{1}{B\tau^2}
 \end{align*}
 \end{document}
