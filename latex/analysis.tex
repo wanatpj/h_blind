@@ -75,9 +75,11 @@ $delta(i, j) = \left\{
 Now, it is crucial to figure out how good is the predicate. To get this we will
 compute $Pr(|Y_{ij} - E(Y_{ij})| >= \tau)$. If it is small then the edge model
 is approximated well. Let's apply Chebyshev inequality:
-\begin{align*}
-Pr(|Y_{ij} - E(Y_{ij})| \geq \tau) &\leq \frac{Var(Y_{ij})}{\tau^2}\\
-  & \leq \frac{1}{B\tau^2}\\
-  & \leq \frac{1}{B\tau^2}
-\end{align*}
+$$
+Pr(|Y_{ij} - E(Y_{ij})| \geq \tau)
+  \leq \frac{Var(Y_{ij})}{\tau^2}
+  \leq \frac{1}{B\tau^2}
+  = \frac{256*256*128*128}{B*255*255}
+$$
+, so if $B > 166000$ then $Pr(|Y_{ij} - E(Y_{ij})| >= \tau) <= 0.1$.
 \end{document}
