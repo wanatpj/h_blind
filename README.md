@@ -125,7 +125,7 @@ the histogram for variable X<sub>a</sub> - X<sub>b</sub>. It turns out that a
 distribution of |X<sub>a</sub> - X<sub>b</sub>| looks like exponential. 
 Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 unwatermarked JPG pictures:
 ![X_a-X_b not watermarked](/images/histograms/diff_hist_no_water_4pics.png)
-Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 watermarked JPG pictures:
+Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 watermarked BMP pictures:
 ![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)
 ### Deduction of watermark form the edge model
 
