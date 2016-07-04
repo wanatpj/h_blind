@@ -122,7 +122,7 @@ We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were
 supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are
 further. That's very nice phenomeon, which could be understood when we analyze
 the histogram for variable X<sub>a</sub> - X<sub>b</sub>. It turns out that a
-distribution of |X<sub>a</sub> - X<sub>b</sub>| looks like exponential.\\
+distribution of |X<sub>a</sub> - X<sub>b</sub>| looks like exponential.<br/>
 Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 unwatermarked JPG pictures:
 ![X_a-X_b not watermarked](/images/histograms/diff_hist_no_water_4pics.png)
 Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 watermarked BMP pictures:
