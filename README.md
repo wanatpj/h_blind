@@ -128,6 +128,28 @@ Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 unwatermarked JPG pictures:
 Histogram of X<sub>a</sub> - X<sub>b</sub> for 4 watermarked BMP pictures:
 ![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)
 ### Deduction of watermark form the edge model
+We will perform different strategy on CPU than on GPU.
+#### CPU strategy
+  def update(u, v, delta):
+    change watermark[u] and watermark[v], so that
+      watermark[u] + watermark[v] stays the same 
+      and watermark[u] + delta = watermark[v]
+      and -1 <= watermark[u], watermark[v] <= 1 (possibly decrease delta to fit this condition)
+  def reinforce(edge):
+    update(edge.endA, edge.endB, delta(edge))
+  
+  for every vertex v: set watermark[v] = 0.
+  edge = pick_random_edge(graph)
+  reinforce(edge)
+#### GPU strategy
+  id = getVertexId()
+  reinforce(up_edge(id))
+  reinforce(right_edge(id))
+  reinforce(down_edge(id))
+  reinforce(left_edge(id))
+
+up_edge/right_edge/down_edge/left_edge return respectively the edge that
+starts in vertex id and goes up/right/down/left from the vertex.
 
 ## Experimental speed of convergence
 #### TODO generate speed of convergence for GPU and CPU. Explain the difference
