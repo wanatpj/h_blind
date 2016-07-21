@@ -140,16 +140,18 @@ def reinforce(edge):
   update(edge.endA, edge.endB, delta(edge))
   
 for every vertex v: set watermark[v] = 0.
-edge = pick_random_edge(graph)
-reinforce(edge)
+repeat:
+  edge = pick_random_edge(graph)
+  reinforce(edge)
 </pre>
 #### GPU strategy
 <pre>
 id = getVertexId()
-reinforce(up_edge(id))
-reinforce(right_edge(id))
-reinforce(down_edge(id))
-reinforce(left_edge(id))
+repeat:
+  reinforce(up_edge(id))
+  reinforce(right_edge(id))
+  reinforce(down_edge(id))
+  reinforce(left_edge(id))
 </pre>
 up_edge/right_edge/down_edge/left_edge return respectively the edge that
 starts in vertex id and goes up/right/down/left from the vertex.
