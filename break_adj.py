@@ -82,7 +82,7 @@ def _parse_flags():
       "--usecuda",
       dest="usecuda",
       help="true iff should use gpu compiting (cuda)",
-      metavar="FILE")
+      metavar="true")
   (options, args) = parser.parse_args()
   watermarked = options.watermarked
   deduced = options.deduced

@@ -17,7 +17,7 @@ def _parse_flags():
       "--out",
       dest="outdir",
       help="location to directory where to save watermarked images",
-      metavar="DATE")
+      metavar="DIR")
   parser.add_option("-w",
       "--watermark",
       dest="watermark",
@@ -27,7 +27,7 @@ def _parse_flags():
       "--usecuda",
       dest="usecuda",
       help="true iff should use gpu compiting (cuda)",
-      metavar="FILE")
+      metavar="true")
   (options, args) = parser.parse_args()
   indir = options.indir
   outdir = options.outdir
