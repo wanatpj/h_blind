@@ -13,6 +13,7 @@ Quoting wikipedia:
 > viewed by reflected light, atop a dark background), caused by thickness or
 > density variations in the paper. Watermarks have been used on postage stamps,
 > currency, and other government documents to discourage counterfeiting.
+
 This concept has been introduced to digital world, so authors of an intelectual
 property could protect themself from thiefs or people who just forgot to point
 the source. In last decade when more and more things are being computerized,
