@@ -6,7 +6,26 @@ E_BLIND is no longer good way to watermark set of images. You can still
 watermark one or two, but not more with the same watermark. You still can have a
  small set of watermarks, but do not group pictures with the same watermark.
 
-## Introduction - motivation for watermarks
+## Concept of watermarking
+Quoting wikipedia:
+> A watermark is an identifying image or pattern in paper that appears as
+> various shades of lightness/darkness when viewed by transmitted light (or when
+> viewed by reflected light, atop a dark background), caused by thickness or
+> density variations in the paper. Watermarks have been used on postage stamps,
+> currency, and other government documents to discourage counterfeiting.
+This concept has been introduced to digital world, so authors of an intelectual
+property could protect themself from thiefs or people who just forgot to point
+the source. In last decade when more and more things are being computerized,
+there is a need to protect the things from being copied and paste somewhere
+else in case they should not be moved from origin.
+![Watermark on note]{https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg}
+*Source wikipedia*
+In this paper, we will focus on watermarkes that cannot be seen with the naked
+eye.
+
+## Motivations for watermarking of digital content
+Let us consider 3 possible use cases of watermarking digital content.
+#### Direct leak detection
 Film production company makes a film. They claim that their new movie is
 awesome. However, they want to make money, so they want people to pay for
 watching them in cinema. Life is tough and nobody will pay for a bad movie.
@@ -16,7 +35,7 @@ afraid that if they share the movie with some critic then they could share the
 movie onwards. To prevent critic from sharing, the company can watermark the
 movie, so they will know who made a leak in case of any.
 ![Leak by critic](/images/simple-leak-detection.png)
-
+#### Content tracking
 Film production company makes movies. They already have big portfolio that
 contains hundreds of digital works. They know that from time to time some
 malicious person uploads their works to YouTube. They are very sad about that.
@@ -25,8 +44,8 @@ before any release
 they watermark all their works with single watermark and they just check, if the
 work from the Internet containes their watermark.
 ![Fast tracking of images](/images/watermark-tracking.png)
-
-Film production company made a movie. They want to sell their movie to some
+#### End user leak detection
+3. Film production company made a movie. They want to sell their movie to some
 end users, via cinemas or other film brokers. They are afraid that some end user
 will find a way to download the content and then share it somewhere in the
 Internet. They want to secure themself, so they always can identify the end user
@@ -53,11 +72,17 @@ iff := if and only if
 c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub> in 0..255 - value of pixel i in image c
 C - random variable that denotes an image
-N = 2592*1944
+N = 2592*1944 - number of pixels
 B = number of images
+dot_product(A, B) = \sum_i A[i]*B[i] - in case of images i is 2 dimensional index
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
 Chebyshev's inequality: Pr(|X-E(X)| >= eps) = Var(X)/(eps^2)
+Random picture model: Probability space over the set of images in which
+    the value of every pixel has uniform distribution on {0, 1, ..., 255} and
+    the values are mutually independent.
+Natural picture model: Probability space over the set of images that is induced
+    by reality.
 </pre>
 
 ## E_BLIND/D_LC watermarking system
@@ -82,7 +107,7 @@ You can read more about this watermarking system in a book
 ### Watermark embedding (E_BLIND)<br/>
 <pre>
   input: c<sub>i</sub>, w<sub>i</sub>
-  wc<sub>i</sub> = c<sub>i</sub> + alpha*w<sub>i</sub>
+  wc<sub>i</sub> = c<sub>i</sub> + w<sub>i</sub>
 </pre>
 ### Watermark detecting (D_LC)<br/>
 <pre>
@@ -95,15 +120,21 @@ You can read more about this watermarking system in a book
       else
         watermark undetected
 </pre>
+Let us see the system in use:<br/>
+Not watermarked picture:
+![Sample watermark](/images/watermark.bmp)
 Sample watermark:
 ![Sample watermark](/watermark.bmp)
+Watermarked picture:
+![Sample watermark](/images/example_watermarked.bmp)
+Unpossible to spot a difference with the naked eye.
 
 ## Breaking E_BLIND
 The algorithm will have two steps:
   1. Deduction of edge model.
   2. Deduction of a watermark form the edge model.
 
-Let's define a graph. The set of vertices will corespond to pixels. Let's remind
+Let us define a graph. The set of vertices will corespond to pixels. Let us remind
 that we consider images of certain size, so the number of vertices is set. There
 will be an edge between two vertices iff the coresponding pixels are adjacent.
 For every edge (i, j) we want to claim value delta(i, j) that will denote our
@@ -115,7 +146,7 @@ w<sub>i</sub>.
 ### Deduction of edge model
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 However live is different, much convenient.
-Let's see the histogram that was generated for horizontal Y<sub>ij</sub> on around 650 photos.
+Let us see the histogram that was generated for horizontal Y<sub>ij</sub> on around 650 photos.
 #### TODO GENERATE PROPER HISTOGRAM
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
 We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were
@@ -163,14 +194,16 @@ starts in vertex id and goes up/right/down/left from the vertex.
 Generating random watermark:<br/>
 python generate_watermark.py -o watermark
 
-Watermarking pictures with E_BLIND(alpha = 1):<br/>
-python watermark_pictures.py --in=photos --out=watermarked --watermark=watermark.bmp --usecuda=true
+Watermarking pictures with E_BLIND:<br/>
+python watermark_pictures.py --in=photos --out=watermarked
+--watermark=watermark.bmp --usecuda=true
 
 Computing linear correlation of multiple files against a watermark:<br/>
 python compute_linear_correlation.py --in=watermarked --reference=watermark.bmp
 
 Finding a watermark embedded in multiple digital works:<br/>
-python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp --size=2592x1944 --usecuda=true
+python break_adj.py --watermarked=watermarked/ --deduced=deduced.bmp
+--size=2592x1944 --usecuda=true
 
 Generating histogram for differences between adjacent pixels:<br/>
 python diffenerce_histogram.py --in=photos/  --rangeradius=30
@@ -179,11 +212,13 @@ python diffenerce_histogram.py --in=photos/  --rangeradius=30
 #### TODO add array that shows GPU speedup
 
 ## Problems
-1. File format: If you take a content and watermark them using E_BLIND
-(alpha = 1) and then you save them as JPG then it is more likely that your
-watermark won't survive a compresion and will not be visible anymore. So when I
-use E_BLIND (alpha = 1), I save the watermarked content in BMP.
-2. Analysis of breaking algorithm assumes that C'<sup>k</sup> = C<sup>k</sup> + w. In fact, C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
+1. File format: If you take a content and watermark them using E_BLIND and then
+you save them as JPG then it is more likely that your watermark won't survive
+a compresion and will not be visible anymore. So when I use E_BLIND, I save
+the watermarked content in BMP.
+2. Analysis of breaking algorithm assumes that
+C'<sup>k</sup> = C<sup>k</sup> + w. In fact,
+C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
 3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
 
 ## Epilogue
@@ -191,5 +226,6 @@ You can make E_BLIND resistant from this attack if you have a set of watermarks
 and you always pick a watermark at random before watermarking any single
 picture or in case you are watermarking movie then you should pick a watermark
 at random for any frame.<br/>
-If you are aware of any bugs or typos then feel free to contact me on gmail. I have the same id as I have on github.
+If you are aware of any bugs or typos then feel free to contact me on gmail. I
+have the same id as I have on github.
 
