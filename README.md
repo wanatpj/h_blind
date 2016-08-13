@@ -123,7 +123,7 @@ You can read more about this watermarking system in a book
 </pre>
 Let us see the system in use:<br/>
 Not watermarked picture:
-![Sample watermark](/images/watermark.bmp)
+![Sample watermark](/images/example.bmp)
 Sample watermark:
 ![Sample watermark](/watermark.bmp)
 Watermarked picture:
