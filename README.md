@@ -71,7 +71,8 @@ and detecting algorithms.
 <pre>
 iff := if and only if
 c, c<sup>k</sup> - content image, k-th content image
-c<sub>i</sub> in 0..255 - value of pixel i in image c
+w - watermark, w_i in {-1, 1}
+c<sub>i</sub>, c<sup>k</sup><sub>i</sub> in 0..255 - value of pixel i in image c
 C - random variable that denotes an image
 N = 2592*1944 - number of pixels
 B = number of images
@@ -85,7 +86,9 @@ Random picture model: Probability space over the set of images in which
 Natural picture model: Probability space over the set of images that is induced
     by reality.
 </pre>
-
+Just let us point out that we don't really know how the natural picture model
+looks like, so we will perform analysis on random picture model and then we will
+try to understand why the same theorems work for natural picture model.
 ## E_BLIND/D_LC watermarking system
 In this watermark system, the
 [standard black/white image](https://github.com/wanatpj/h_blind#background) is
@@ -131,15 +134,27 @@ Watermarked picture:
 Unpossible to spot a difference with the naked eye.
 
 ## Breaking E_BLIND
+Let us start from introducing the trick that will break the algorithm.
+Basically, our believe is that if we take a random picture from the Internet
+then if we pick some two adjacent pixels (i, j) on the image then
+Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])).
+However, if the image is watermarked with E_BLIND and w[i] > w[j] then we expect
+that Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])) + epsilon.
+We will introduce statistics based on that and getting a corpus of
+watermarked images, we will try to conclude what is delta of w between all
+adjacent pixels. When we conclude the delta, we will try to figure out all
+values of w.
+
 The algorithm will have two steps:
-  1. Deduction of edge model.
+  1. Deduction of an edge model.
   2. Deduction of a watermark form the edge model.
 
-Let us define a graph. The set of vertices will corespond to pixels. Let us remind
-that we consider images of certain size, so the number of vertices is set. There
-will be an edge between two vertices iff the coresponding pixels are adjacent.
-For every edge (i, j) we want to claim value delta(i, j) that will denote our
-guess about the watermark difference on pixel i and j, i.e.
+### Defining edge model
+Let us define a graph. The set of vertices will corespond to pixels. Let us
+remind that we consider images of certain size, so the number of vertices is
+set. There will be an edge between two vertices iff the coresponding pixels are
+adjacent. For every edge (i, j) we want to claim value delta(i, j) that will
+denote our guess about the watermark difference on pixel i and j, i.e.
 w<sub>i</sub> + delta(i, j) = w<sub>j</sub>. So by deduction of edge model, we
 understand that given the set of photos with the same watermark we guess
 delta(i, j). Having delta(i, j) we go to step 2 and we try to deduce
