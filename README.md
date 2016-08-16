@@ -41,6 +41,7 @@ watermark and sends the watermarked content to film critics. Whenever a film
 critic makes a leak, we can identify him by checking if the leaked work contains
 a watermarked associated with him.
 ![Leak by critic](/images/simple-leak-detection.png)
+*Below picture would be a picture leaked by Paweł Wanat*
 ![Leak by critic](/images/example-critic.jpg)
 #### Content tracking
 Film production company makes movies. They already have big portfolio that
@@ -251,3 +252,7 @@ at random for any frame.<br/>
 If you are aware of any bugs or typos then feel free to contact me on gmail. I
 have the same id as I have on github.
 
+## References
+* Ingemar Cox, Matthew Miller, Jeffrey Bloom, Jessica Fridrich, Ton Kalker; Digital Watermarking and Steganography
+* https://en.wikipedia.org/wiki/Watermark
+* Biermann, Christopher J. (1996). "7". Handbook of Pulping and Papermaking (2 ed.). San Diego, California, USA: Academic Press. p. 171. ISBN 0-12-097362-6.
