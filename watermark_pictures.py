@@ -6,7 +6,7 @@ from PIL import Image
 from common import ImageSizeFilter, get_pool, get_watermark
 
 def _parse_flags():
-  global indir, outdir, watermarkfile, usecuda
+  global indir, outdir, watermarkfile, alpha, usecuda
   parser = OptionParser()
   parser.add_option("-i",
       "--in",
@@ -23,6 +23,11 @@ def _parse_flags():
       dest="watermark",
       help="watermark file",
       metavar="FILE")
+  parser.add_option("-a",
+      "--alpha",
+      dest="alpha",
+      help="magnitude multiplier for watermark, by default = 1",
+      metavar="INTEGER")
   parser.add_option("-c",
       "--usecuda",
       dest="usecuda",
@@ -32,15 +37,20 @@ def _parse_flags():
   indir = options.indir
   outdir = options.outdir
   watermarkfile = options.watermark
+  alpha = 1 if options.alpha == None else int(options.alpha)
   usecuda = True\
       if options.usecuda != None and options.usecuda.lower()[0] == 't'\
       else False
 
+def bounded(val):
+  return min(255, max(0, val))
+
 class WatermarkContentExecutor:
-  def __init__(self, width, height, watermark, indir, outdir):
+  def __init__(self, width, height, watermark, alpha, indir, outdir):
     self.width = width
     self.height = height
     self.watermark = watermark
+    self.alpha = alpha
     self.indir = indir
     self.outdir = outdir
   def __call__(self, f):
@@ -49,8 +59,9 @@ class WatermarkContentExecutor:
     image = Image.open(infile)
     img = image.load()
     for x, y in np.ndindex((self.width, self.height)):
-      img[x, y] =\
-          tuple(map(lambda z: z + self.watermark[x + y*self.width], img[x, y]))
+      img[x, y] = tuple(map(\
+          lambda z: bounded(z + self.alpha * self.watermark[x + y*self.width]),\
+          img[x, y]))
     image.save(outfile)
 
 class GpuWatermarkContentExecutor:
@@ -65,7 +76,7 @@ class GpuWatermarkContentExecutor:
     cudalib.watermark_content(infile, outfile, self.gpu_watermark)
 
 def main():
-  global indir, outdir, watermarkfile, usecuda
+  global indir, outdir, watermarkfile, alpha, usecuda
   _parse_flags()
   (width, height), watermark = get_watermark(watermarkfile)
   images_to_map = filter(
@@ -74,6 +85,9 @@ def main():
   if usecuda:
     global cudalib
     import cudalib
+    if alpha != 1:
+      # TODO: make it work
+      raise Exception("No support for cuda watermarking with alpha != 1")
     map(GpuWatermarkContentExecutor(
         cudalib.prepare_gpu_array(watermark),
         indir,
@@ -84,6 +98,7 @@ def main():
             width,
             height,
             watermark,
+            alpha,
             indir,
             outdir),
         images_to_map)
