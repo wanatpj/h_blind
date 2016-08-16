@@ -54,7 +54,7 @@ they watermark all their works with single watermark and they just check, if the
 work from the Internet containes their watermark.
 ![Fast tracking of images](/images/watermark-tracking.png)
 #### End user leak detection
-3. Film production company made a movie. They want to sell their movie to some
+Film production company made a movie. They want to sell their movie to some
 end users, via cinemas or other film brokers. They are afraid that some end user
 will find a way to download the content and then share it somewhere in the
 Internet. They want to secure themself, so they always can identify the end user
