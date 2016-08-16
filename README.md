@@ -19,10 +19,11 @@ property could protect themself from thiefs or people who just forgot to point
 the source. In last decade when more and more things are being computerized,
 there is a need to protect the things from being copied and paste somewhere
 else in case they should not be moved from origin.
-![Watermark on note](https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg)
-*Source wikipedia*
+![Watermark on note](https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg)<br/>
+*Source https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg*<br/>
 In this paper, we will focus on watermarkes that cannot be seen with the naked
-eye.
+eye. However some examples will contain visible watermarks to make understading
+cleaner.
 
 ## Motivations for watermarking of digital content
 Let us consider 3 possible use cases of watermarking digital content.
@@ -87,15 +88,15 @@ dot_product(A, B) = \sum_i A[i]*B[i] - in case of images i is 2 dimensional inde
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
 Chebyshev's inequality: Pr(|X-E(X)| >= eps) = Var(X)/(eps^2)
-Random picture model: Probability space over the set of images in which
+Random Picture Model: Probability space over the set of images in which
     the value of every pixel has uniform distribution on {0, 1, ..., 255} and
     the values are mutually independent.
-Natural picture model: Probability space over the set of images that is induced
+Natural Picture Model: Probability space over the set of images that is induced
     by reality.
 </pre>
-Just let us point out that we don't really know how the natural picture model
-looks like, so we will perform analysis on random picture model and then we will
-try to understand why the same theorems work for natural picture model.
+Just let us point out that we don't really know how the Natural Picture Model
+looks like, so we will perform analysis on Random Picture Model and then we will
+try to understand why the same theorems work for Natural Picture Model.
 ## E_BLIND/D_LC watermarking system
 In this watermark system, the
 [standard black/white image](https://github.com/wanatpj/h_blind#background) is
@@ -132,11 +133,11 @@ You can read more about this watermarking system in a book
         watermark undetected
 </pre>
 Let us see the system in use:<br/>
-Not watermarked picture:
+*Not watermarked picture*
 ![Sample watermark](/images/example.jpg)
-Sample watermark:
+*Sample watermark*
 ![Sample watermark](/watermark.bmp)
-Watermarked picture:
+*Watermarked picture*
 ![Sample watermark](/images/example_watermarked.bmp)
 Unpossible to spot a difference with the naked eye.
 
@@ -172,7 +173,7 @@ However live is different, much convenient.
 Let us see the histogram that was generated for horizontal Y<sub>ij</sub> on around 650 photos.
 #### TODO GENERATE PROPER HISTOGRAM
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
-We see the peaks around -0.75, 0, 0.75. In the "random picture model"*, we were
+We see the peaks around -0.75, 0, 0.75. In the Random Picture Model, we were
 supposed to have 3 peaks around -1/64, 0, 1/64. On real images the peaks are
 further. That's very nice phenomeon, which could be understood when we analyze
 the histogram for variable X<sub>a</sub> - X<sub>b</sub>. It turns out that a
@@ -242,7 +243,8 @@ the watermarked content in BMP.
 2. Analysis of breaking algorithm assumes that
 C'<sup>k</sup> = C<sup>k</sup> + w. In fact,
 C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
-3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75
+3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75 when
+considering Natural Picture Model.
 
 ## Epilogue
 You can make E_BLIND resistant from this attack if you have a set of watermarks
