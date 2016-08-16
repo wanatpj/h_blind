@@ -34,8 +34,14 @@ Thus the company wants to send the movie to several film critics, so they
 give a good recommendation and so they could earn money. However the company is
 afraid that if they share the movie with some critic then they could share the
 movie onwards. To prevent critic from sharing, the company can watermark the
-movie, so they will know who made a leak in case of any.
+movie, so they will know who made a leak in case of any.<br/>
+The below picture present the exact solution to above problem. Producer who owns
+a digital work, watermarks every copy of the digital work with different
+watermark and sends the watermarked content to film critics. Whenever a film
+critic makes a leak, we can identify him by checking if the leaked work contains
+a watermarked associated with him.
 ![Leak by critic](/images/simple-leak-detection.png)
+![Leak by critic](/images/example-critic.jpg)
 #### Content tracking
 Film production company makes movies. They already have big portfolio that
 contains hundreds of digital works. They know that from time to time some
