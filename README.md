@@ -36,8 +36,8 @@ give a good recommendation and so they could earn money. However the company is
 afraid that if they share the movie with some critic then they could share the
 movie onwards. To prevent critic from sharing, the company can watermark the
 movie, so they will know who made a leak in case of any.<br/>
-The below picture present the exact solution to above problem. Producer who owns
-a digital work, watermarks every copy of the digital work with different
+The below picture presents the exact solution to above problem. Producer who
+owns a digital work, watermarks every copy of the digital work with different
 watermark and sends the watermarked content to film critics. Whenever a film
 critic makes a leak, we can identify him by checking if the leaked work contains
 a watermarked associated with him.
@@ -51,8 +51,17 @@ malicious person uploads their works to YouTube. They are very sad about that.
 Verifying that a single work found in the Internet belongs to them is costly, so
 before any release
 they watermark all their works with single watermark and they just check, if the
-work from the Internet containes their watermark.
+work from the Internet containes their watermark.<br/>
+On the below picture, we can find that that the producer has n movies and there
+are m movies in the Intenet that could potentialy belong to the producer. The
+brute force algorithm would have to compare every producer movie with every
+movie from the Internet. That would give us nm comparisons. However, when we
+watermark picure before then all we have to do is to check if producers's
+watermark apears on the Internet content. That gives us linear number of checks.
 ![Fast tracking of images](/images/watermark-tracking.png)
+Solution to this problem might be used by photographers who post their works in
+the Internet. It happens frequently that people are reposting their picture on
+their feeds without pointing the source.
 #### End user leak detection
 Film production company made a movie. They want to sell their movie to some
 end users, via cinemas or other film brokers. They are afraid that some end user
