@@ -61,7 +61,7 @@ watermark apears on the Internet content. That gives us linear number of checks.
 ![Fast tracking of images](/images/watermark-tracking.png)
 Solution to this problem might be used by photographers who post their works in
 the Internet. It happens frequently that people are reposting their picture on
-their feeds without pointing the source.
+their feeds in social media without pointing the source.
 #### End user leak detection
 Film production company made a movie. They want to sell their movie to some
 end users, via cinemas or other film brokers. They are afraid that some end user
