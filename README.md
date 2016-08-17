@@ -70,9 +70,23 @@ Internet. They want to secure themself, so they always can identify the end user
 who made a leak. They decided that they will watermark the movie before sending
 to any broker and they ask the brokers to watermark it again before sending to
 any user. When the leak occur, the company will identify the broker and the
-broker will identify the end user.
+broker will identify the end user.<br/>
+The below picture explains the process of identifing the user in case of an
+Internet sreaming film broker. At first we have first level watermarking.
+We send wm<sub>i</sub>(DIGITAL WORK) to broker company i.
+wm<sub>i</sub>(DIGITAL WORK) denotes watermarked version of DIGITAL WORK. Index
+i denotes that for every broker we watermark the work using different watermark.
+Then there is a second level of watermarking when brokers distribute the work to
+the end users. When some end user will make a leak then we first identify the
+broker and the broker identifies the end user.
 ![Leak by end user](/images/leak-detection-with-a-broker.png)
-
+*Below picture would be a picture leaked by Paweł Wanat through Company G*
+![Leak by critic](/images/example-end-user.jpg)
+It is worth to mention how to identify end users if they recorded hiddenly
+the movie in a cinema. At first we would have three layers of watermarking:
+company wide watermark, physical address of subordinate, date and room. Then
+they would be able to identify the seat of the end user by geometric properties
+of recorded screen.
 ## Background
 For theoretical simplicity, we will live in the world of 2592x1944
 grayscale images. When we consider a certain image, c<sub>i</sub> denotes
