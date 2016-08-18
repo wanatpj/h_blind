@@ -108,6 +108,9 @@ watermarked with the watermark then detecting algorithm should replay:
 ## Definitions and lemmas
 <pre>
 iff := if and only if
+abs(x) = -x if x &lt; 0 else x
+E(X) - expected value of random variable X
+Var(X) - variance of random variable X
 w - watermark, w_i in {-1, 1}
 c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub>, c<sup>k</sup><sub>i</sub> in 0..255 - value of pixel i in image c
@@ -128,23 +131,24 @@ Just let us point out that we don't really know how the Natural Picture Model
 looks like, so we will perform analysis on Random Picture Model and then we will
 try to understand why the same theorems work for Natural Picture Model.
 ## E_BLIND/D_LC watermarking system
-In this watermark system, the
-[standard black/white image](https://github.com/wanatpj/h_blind#background) is
-used, as watermark. As mentioned before, black is 1, white is -1. The embeding
-algorithm is sumation of two matrices. So any pixel in watermarked content will
-differ by 1 from the original pixel.<br/>
-Now, a linear correlation between watermark and watermark itself is 1.<br/>
-A linear correlation between watermark and <b>un</b>watermarked content is
-around 0. Why? Assuming that watermark is random then dot product of c and w
-is random walk arround 0 and it's expected value is upper bounded by
-const*sqrt(N) and so the expected value of linear correlation is bounded by
-const/sqrt(N).<br/>
+We consider the world of certain size pictures (par example 2592x1944). All
+images are in grayscale. And the watermark is standard white/black image where
+black denotes 1 and white denotes -1.<br/>
+The **embeding** algorithm is sumation of two matrices. So any pixel in
+a watermarked content will differ by 1 from the original pixel.<br/>
+The **detecting** algorithm checks the value of linear correlation between
+a digital content and the watermark and in case it reaches some threshold
+(let us take 0.7) then it reports a positive outcome of detection.<br/>
+Why does it work? A linear correlation between a watermark and the watermark
+itself is 1. A linear correlation between a watermark and
+an **un**watermarked content is around 0. Why? Assuming that watermark is
+randomly generated then a dot product of c and w is random walk arround 0
+(w<sub>i</sub> indicates a direction of walk and c<sub>i</sub> indicates
+a magnitude). So abs(E(the dot product)) is upper bounded by const*sqrt(N) and
+thus abs(E(the linear correlation)) is upper bounded by const/sqrt(N).<br/>
 Then a linear correlation between watermark and watermarked content is around
 1.<br/>
-The detecting algorithm checks linear correlation between being verified content
-and watermark and in case it reaches some threshold then it reports a
-detection.<br/>
-You can read more about this watermarking system in a book
+You can read more about this watermarking system in the book:
 [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
 ### Watermark embedding (E_BLIND)<br/>
 <pre>
