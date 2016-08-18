@@ -200,12 +200,12 @@ The algorithm will have two steps:
 Let us define a graph. The set of vertices will corespond to pixels. Let us
 remind that we consider images of certain size, so the number of vertices is
 set. There will be an edge between two vertices iff the coresponding pixels are
-adjacent. For every edge (i, j) we want to claim value delta(i, j) that will
-denote our guess about the watermark difference on pixel i and j, i.e.
-w<sub>i</sub> + delta(i, j) = w<sub>j</sub>. So by deduction of edge model, we
+adjacent. For every edge *(i, j)* we want to claim value *delta(i, j)* that will
+denote our guess about the watermark difference on pixel *i* and *j*, i.e.
+*w<sub>i</sub> + delta(i, j) = w<sub>j</sub>*. So by deduction of edge model, we
 understand that given the set of photos with the same watermark we guess
-delta(i, j). Having delta(i, j) we go to step 2 and we try to deduce
-w<sub>i</sub>.
+*delta(i, j)*. Having *delta(i, j)* we go to step 2 and we try to deduce
+*w<sub>i</sub>*.
 ### Deduction of edge model
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 However live is different, much convenient.
