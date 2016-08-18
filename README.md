@@ -183,7 +183,11 @@ then if we pick some two adjacent pixels *i*, *j* on the image then<br/>
 *Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j]))*.<br/>
 However, if the image is watermarked with E_BLIND and *w[i] > w[j]* then we
 expect that<br/>
-*Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])) + epsilon*.<br/>
+*Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])) + epsilon, for some epsilon > 0 that is common for every i,j*.<br/>
+We hope that epsilon will be big enough.<br/>
+The above equations are true in Random Picture Model and we believe them to be
+true for Natural Picture Model or almost true. By almost true we mean that
+= ralation becomes *is very close to* relation.
 We will introduce statistics based on that and getting a corpus of
 watermarked images, we will try to conclude what is delta of *w* between all
 adjacent pixels. When we conclude the delta, we will try to figure out all
