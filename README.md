@@ -132,8 +132,9 @@ looks like, so we will perform analysis on Random Picture Model and then we will
 try to understand why the same theorems work for Natural Picture Model.
 ## E_BLIND/D_LC watermarking system
 We consider the world of certain size pictures (par example 2592x1944). All
-images are in grayscale. And the watermark is standard white/black image where
-black denotes 1 and white denotes -1.<br/>
+images are in grayscale, so every pixel has an integer value from 0 to 255.
+The watermark is standard white/black image where black denotes 1 and white
+denotes -1.<br/>
 The **embeding** algorithm is sumation of two matrices. So any pixel in
 a watermarked content will differ by 1 from the original pixel.<br/>
 The **detecting** algorithm checks the value of linear correlation between
