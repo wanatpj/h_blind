@@ -143,7 +143,7 @@ a digital content and the watermark and in case it reaches some threshold
 Why does it work? A linear correlation between a watermark and the watermark
 itself is 1. A linear correlation between a watermark and
 an **un**watermarked content is around 0. Why? Assuming that watermark is
-randomly generated then a dot product of c and w is random walk arround 0
+randomly generated then a dot product of *c* and *w* is random walk arround 0
 (w<sub>i</sub> indicates a direction of walk and c<sub>i</sub> indicates
 a magnitude). So abs(E(the dot product)) is upper bounded by const*sqrt(N) and
 thus abs(E(the linear correlation)) is upper bounded by const/sqrt(N).<br/>
@@ -179,14 +179,15 @@ Unpossible to spot a difference with the naked eye.
 ## Breaking E_BLIND
 Let us start from introducing the trick that will break the algorithm.
 Basically, our believe is that if we take a random picture from the Internet
-then if we pick some two adjacent pixels (i, j) on the image then
-Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])).
-However, if the image is watermarked with E_BLIND and w[i] > w[j] then we expect
-that Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])) + epsilon.
+then if we pick some two adjacent pixels *i*, *j* on the image then<br/>
+*Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j]))*.<br/>
+However, if the image is watermarked with E_BLIND and *w[i] > w[j]* then we
+expect that<br/>
+*Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])) + epsilon*.<br/>
 We will introduce statistics based on that and getting a corpus of
-watermarked images, we will try to conclude what is delta of w between all
+watermarked images, we will try to conclude what is delta of *w* between all
 adjacent pixels. When we conclude the delta, we will try to figure out all
-values of w.
+values of *w*.
 
 The algorithm will have two steps:
   1. Deduction of an edge model.
