@@ -95,19 +95,26 @@ or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
 w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i
 is black). This kind of definition for watermark is common for some set of
 watermarking systems. By watrmarking system we understand a pair of embedding
-and detecting algorithms.
+and detecting algorithms. The below picture discribes data flow in watermarking
+system. At first embedding algorithm takes a digital content and a watermark.
+Having this it produces a watermakred version of the digital content.
+The rest of work is done by a detecting algorithm. The input for the detecting
+algorithm is the watermark and a digital content. If the digital content was
+watermarked with the watermark then detecting algorithm should replay:
+"Yes, this work contains the watermark" otherwise
+"No, the watermark not detected".
 ![Embedding/detecting algorithm](/images/embedding-detecting-algorithm.png)
 
 ## Definitions and lemmas
 <pre>
 iff := if and only if
-c, c<sup>k</sup> - content image, k-th content image
 w - watermark, w_i in {-1, 1}
+c, c<sup>k</sup> - content image, k-th content image
 c<sub>i</sub>, c<sup>k</sup><sub>i</sub> in 0..255 - value of pixel i in image c
 C - random variable that denotes an image
 N = 2592*1944 - number of pixels
 B = number of images
-dot_product(A, B) = \sum_i A[i]*B[i] - in case of images i is 2 dimensional index
+dot_product(A, B) = \sum_i A[i]*B[i] - in case of images, i is 2 dimensional index
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
 Chebyshev's inequality: Pr(|X-E(X)| >= eps) = Var(X)/(eps^2)
