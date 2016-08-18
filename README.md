@@ -177,21 +177,20 @@ Let us see the system in use:<br/>
 Unpossible to spot a difference with the naked eye.
 
 ## Breaking E_BLIND
-Let us start from introducing the trick that will break the algorithm.
-Basically, our believe is that if we take a random picture from the Internet
+Let us start from introducing the trick that will break the E_BLIND method.
+Basically, our believe is that if we take random picture *c* from the Internet
 then if we pick some two adjacent pixels *i*, *j* on the image then<br/>
-*Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j]))*.<br/>
-However, if the image is watermarked with E_BLIND and *w[i] > w[j]* then we
-expect that<br/>
-*Pr(grayscale(color[i]) &gt; grayscale(color[j])) = Pr(grayscale(color[i]) &lt; grayscale(color[j])) + epsilon, for some epsilon > 0 that is common for every i,j*.<br/>
+*Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>))*.<br/>
+However, if the image is watermarked with E_BLIND and
+*w<sub>i</sub> > w<sub>j</sub>* then we expect that<br/>
+*Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>)) + epsilon, for some epsilon > 0 that is common for every i,j*.<br/>
 We hope that epsilon will be big enough.<br/>
 The above equations are true in Random Picture Model and we believe them to be
 true for Natural Picture Model or almost true. By almost true we mean that
-= ralation becomes *is very close to* relation.
-We will introduce statistics based on that and getting a corpus of
-watermarked images, we will try to conclude what is delta of *w* between all
-adjacent pixels. When we conclude the delta, we will try to figure out all
-values of *w*.
+= ralation becomes *is very close to* relation. We will introduce statistics
+based on that and getting a corpus of watermarked images, we will try to
+conclude what is *&Delta; w* (*delta* of *w*) between all adjacent pixels. When
+we conclude the *delta*, we will try to figure out all values of *w*.
 
 The algorithm will have two steps:
   1. Deduction of an edge model.
