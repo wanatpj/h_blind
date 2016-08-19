@@ -189,7 +189,7 @@ The above equations are true in Random Picture Model and we believe them to be
 true for Natural Picture Model or almost true. By almost true we mean that
 = ralation becomes *is very close to* relation. We will introduce statistics
 based on that and getting a corpus of watermarked images, we will try to
-conclude what is *&Delta; w* (*delta* of *w*) between all adjacent pixels. When
+conclude what is *&Delta;w* (*delta* of *w*) between all adjacent pixels. When
 we conclude the *delta*, we will try to figure out all values of *w*.
 
 The algorithm will have two steps:
