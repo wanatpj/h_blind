@@ -120,7 +120,7 @@ B = number of images
 dot_product(A, B) = \sum_i A[i]*B[i] - in case of images, i is 2 dimensional index
 lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
     if length(A) == length(B) else raise Exception()
-Chebyshev's inequality: Pr(|X-E(X)| >= eps) = Var(X)/(eps^2)
+Chebyshev's inequality: Pr(|X-E(X)| >= eps) <= Var(X)/(eps^2)
 Random Picture Model: Probability space over the set of images in which
     the value of every pixel has uniform distribution on {0, 1, ..., 255} and
     the values are mutually independent.
