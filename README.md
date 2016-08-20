@@ -6,8 +6,8 @@ E_BLIND is no longer good way to watermark set of images. You can still
 watermark one or two, but not more with the same watermark. You still can have
 a small set of watermarks, but do not group pictures with the same watermark.
 This document describes a way to crack the results of E_BLIND embedding in the
-sense that we discover approximately the hidden watermark. It is provided CPU
-and GPU implementation of the crack.
+sense that we discover approximately the hidden watermark. CPU and GPU
+implementations of the crack are provided.
 
 ## Concept of watermarking
 Quoting wikipedia:
@@ -243,7 +243,7 @@ the algorithm predicts 50% of pixels correcly then it means that if works
 randomly, 0% and 100% correctness are expected mostly). So first dot is not
 a case.<br/>
 Could the corpus be too small. Yes, it could. However, it is hard to test
-the solution on a bigger corpus. The CPU solution is executing more than an hour
+the solution on a bigger corpus. The CPU solution is executing almost an hour
 for 636 pictures. More pictures - more time needed to verify. So the second dot
 might be the case, but we won't verify it.<br/>
 For the third dot the answer is: yes, it is the case. To understand that imagine
@@ -379,6 +379,6 @@ If you are aware of any bugs or typos then feel free to contact me on gmail. I
 have the same id as I have on github.
 
 ## References
-* Ingemar Cox, Matthew Miller, Jeffrey Bloom, Jessica Fridrich, Ton Kalker; Digital Watermarking and Steganography
-* https://en.wikipedia.org/wiki/Watermark
-* Biermann, Christopher J. (1996). "7". Handbook of Pulping and Papermaking (2 ed.). San Diego, California, USA: Academic Press. p. 171. ISBN 0-12-097362-6.
+[1] Ingemar Cox, Matthew Miller, Jeffrey Bloom, Jessica Fridrich, Ton Kalker; Digital Watermarking and Steganography
+[2] https://en.wikipedia.org/wiki/Watermark
+[3] Biermann, Christopher J. (1996). "7". Handbook of Pulping and Papermaking (2 ed.). San Diego, California, USA: Academic Press. p. 171. ISBN 0-12-097362-6.
