@@ -304,7 +304,7 @@ The edge model claims that *delta = 0* for those pixels. We update:
 -1 0.5 0
  0 0.5 0
  </pre>
-And so on. The code for reinforcing by edge:
+And so on. The pseudo code for reinforcing by edge:
 <pre>
 def update(u, v, delta):
   change watermark[u] and watermark[v], so that
