@@ -276,25 +276,34 @@ will be slightly different and thus the results will differ. The essential step
 is to pick the edge and reinforce the watermark, so it reflects the delta for
 this edge in the best way. What does it mean? Let's see an example.<br/>
 We initiate w<sub>i</sub> to 0:
-<pre>000
+<pre>
 000
-000</pre>
+000
+000
+</pre>
 We pick some edge:
-<pre>000
-**00**0
-000</pre>
+<pre>
+000
+<b>00</b>0
+000
+</pre>
 The edge model claims that *delta = 2* for those pixels. We update:
-<pre> 0  0  0
+<pre>
+ 0  0  0
 -1  1  0
- 0  0  0</pre>
+ 0  0  0
+ </pre>
 In next step we pick another edge:
 <pre> 0  0  0
--1  **1**  0
- 0  **0**  0</pre>
+-1  <b>1</b>  0
+ 0  <b>0</b>  0
+ </pre>
 The edge model claims that *delta = 0* for those pixels. We update:
-<pre> 0  0  0
+<pre>
+ 0  0  0
 -1 0.5 0
- 0 0.5 0</pre>
+ 0 0.5 0
+ </pre>
 And so on. The code for reinforcing by edge:
 <pre>
 def update(u, v, delta):
