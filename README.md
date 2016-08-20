@@ -308,6 +308,7 @@ def update(i, j, delta):
     and -1 <= watermark[i], watermark[j] <= 1 (possibly decrease delta to fit this condition)
 def reinforce(edge):
   update(edge.endI, edge.endJ, delta(edge))</pre>
+
 #### CPU strategy
 On CPU we just select randomly an edge from the edge model.
 <pre>
