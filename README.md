@@ -222,9 +222,9 @@ applied. The strategy is described later below.<br/>
 *Result:* **77,5%** correctly predicted pixels of watermark. 77,5% is good, but
 the pixels were much better predicted on top and pretty poorly on bottom. We can
 call it heaven effect.<br/>
-The below picture shows how the breaking algorithm manage to predict pixels of
-the watermark. Green pixels denotes predicted well and red ones are predicted
-wrongly.
+The below picture shows how the breaking algorithm managed to predict pixels of
+the embedded watermark. The green dots denotes ones predicted well and the red
+dots denotes those predicted wrongly.
 ![Pixels prediction verdict](/images/hidden_watermark-diff.bmp)<br/>
 It turns out we can do something better. The things, which might have gone wrong
 are:
@@ -250,11 +250,11 @@ how would a histogram for *Y<sub>ij</sub>* would look like. It should have
 For simplicity the below histogram containes information about horizontal values
 of *Y<sub>ij</sub>*<br/> 
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
-We see the peaks around -0.75, 0, 0.75. The peaks are further. Setting
-&tau; to 0.3 (used in *delta* definition) we are getting result **99,6%**
-correctly predicted pixels of an embedded watermark while running on the corpus
-of 636 photos. I believe that the location of the peaks could be understood by
-considering the histogram of
+We see the peaks around -0.75, 0, 0.75. The peaks are further than in
+Random Picute Model. Setting &tau; to 0.3 (used in *delta* definition) we are
+getting result **99,6%** correctly predicted pixels of an embedded watermark
+while running on the corpus of 636 photos. I believe that the location of
+the peaks could be understood by considering the histogram of
 *|C<sup>k</sup><sub>i</sub> - C<sup>k</sup><sub>j</sub>|*.
 It looks like the exponetial while for Random Picture Model, it is of triangural
 form.<br/>
@@ -265,6 +265,8 @@ all possible edges *(i,j)* and 4 images' indices picked randomly as *k*.
 One nice fact to note is that if we make similiar histogram for watrmarked BMPs
 then we get:
 ![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)<br/>
+Thus the shape analysis of this histogram might give a predicate if there is
+some E_BLIND watermark inside a set of images.
 ### Deduction of watermark form the edge model
 We will perform different strategy on CPU than on GPU.
 #### CPU strategy
