@@ -3,8 +3,11 @@ Extraction of watermark embedded with E_BLIND method on multiple digital picture
 
 ## Objective
 E_BLIND is no longer good way to watermark set of images. You can still
-watermark one or two, but not more with the same watermark. You still can have a
- small set of watermarks, but do not group pictures with the same watermark.
+watermark one or two, but not more with the same watermark. You still can have
+a small set of watermarks, but do not group pictures with the same watermark.
+This document describes a way to crack the results of E_BLIND embedding in the
+sense that we discover approximately the hidden watermark. It is provided CPU
+and GPU implementation of the crack.
 
 ## Concept of watermarking
 Quoting wikipedia:
@@ -268,8 +271,31 @@ then we get:
 Thus the shape analysis of this histogram might give a predicate if there is
 some E_BLIND watermark inside a set of images.
 ### Deduction of watermark form the edge model
-We will perform different strategy on CPU than on GPU.
-#### CPU strategy
+We will perform different strategy on CPU than on GPU. So the CPU/GPU algorithms
+will be slightly different and thus the results will differ. The essential step
+is to pick the edge and reinforce the watermark, so it reflects the delta for
+this edge in the best way. What does it mean? Let's see an example.<br/>
+We initiate w<sub>i</sub> to 0:
+<pre>000
+000
+000</pre>
+We pick some edge:
+<pre>000
+**00**0
+000</pre>
+The edge model claims that *delta = 2* for those pixels. We update:
+<pre> 0  0  0
+-1  1  0
+ 0  0  0</pre>
+In next step we pick another edge:
+<pre> 0  0  0
+-1  **1**  0
+ 0  **0**  0</pre>
+The edge model claims that *delta = 0* for those pixels. We update:
+<pre> 0  0  0
+-1 0.5 0
+ 0 0.5 0</pre>
+And so on. The code for reinforcing by edge:
 <pre>
 def update(u, v, delta):
   change watermark[u] and watermark[v], so that
@@ -278,20 +304,24 @@ def update(u, v, delta):
     and -1 <= watermark[u], watermark[v] <= 1 (possibly decrease delta to fit this condition)
 def reinforce(edge):
   update(edge.endA, edge.endB, delta(edge))
-  
+</pre>
+#### CPU strategy
+On CPU we just select randomly an edge from the edge model.
+<pre>
 for every vertex v: set watermark[v] = 0.
 repeat:
   edge = pick_random_edge(graph)
   reinforce(edge)
 </pre>
 #### GPU strategy
+...
 <pre>
 id = getVertexId()
 repeat:
-  reinforce(up_edge(id))
-  reinforce(right_edge(id))
-  reinforce(down_edge(id))
-  reinforce(left_edge(id))
+  parallel reinforce(up_edge(id))
+  parallel reinforce(right_edge(id))
+  parallel reinforce(down_edge(id))
+  parallel reinforce(left_edge(id))
 </pre>
 up_edge/right_edge/down_edge/left_edge return respectively the edge that
 starts in vertex id and goes up/right/down/left from the vertex.
