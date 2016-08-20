@@ -12,8 +12,8 @@ $X^k_{ij} =
 -1 & \text{, if } C^k_i < C^k_j
 \end{matrix}\right.$\\
 $Y_{ij} = \frac{\sum^B_k X^k_{ij}}{B}$\\
-We will consider $E(Y_{ij})$ and $Var(Y_{ij})$ to get some conclusions about
-the edge model.\\
+We will explore values of $E(Y_{ij})$ and $Var(Y_{ij})$ to get some conclusions
+about the edge model.\\
 Let us jump to Random Picture Model and let $p_l = Pr(X^k_{ij} = l)$ then:
 $p_0 = \frac{1}{256}$\\
 $p_1 = p_{-1} = \frac{1-p_0}{2} = \frac{255}{512}$\\
@@ -79,5 +79,6 @@ Pr(|Y_{ij} - E(Y_{ij})| \geq \tau)
   \leq \frac{1}{B\tau^2}
   = \frac{256\cdot 256\cdot 128\cdot 128}{255\cdot 255\cdot B}
 $$
-, so if $B > 166000$ then $Pr(|Y_{ij} - E(Y_{ij})| >= \tau) <= 0.1$.
+, so if $B > 166000$ then $Pr(|Y_{ij} - E(Y_{ij})| >= \tau) <= 0.1$ and thus
+the edge model is approximated well.
 \end{document}
