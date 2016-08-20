@@ -160,7 +160,8 @@ You can read more about this watermarking system in the book:
 <pre>
   input: c<sub>i</sub>, w<sub>i</sub>
   let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub>
-    in if |lc| > 0.7
+    in
+      if |lc| > 0.7
       then
         watermark detected
       else
@@ -208,27 +209,28 @@ understand that given the set of photos with the same watermark we guess
 *delta(i, j)*. Having *delta(i, j)* we go to step 2 and we try to deduce
 *w<sub>i</sub>*.
 ### Deduction of edge model
-![Horizontal Y_{ij} histogram](/latex/analysis.png)
+![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 The idea for deducing the edge model from the input data is to take
 *C<sup>k</sup> = c<sup>k</sup>* and evaluate *delta* based on that. Let us see
 if this approach works in practise.
 #### Performed test
-Input: A corpus of 626 pictures took mostly by GoPro Hero and
-Samsung Galaxy Nexus.
-Description: The same watermark was embedded into all photos, the edge model was
-deduced and the CPU stategy for duducing watermark from an edge model was
-applied. The strategy is described below.
-Result: 77,5% correctly predicted pixels of watermark. 77,5% is good, but the
-pixels were much better predicted on top and pretty poorly on bottom. We can
+*Input:* A corpus of 626 pictures took mostly by GoPro Hero and
+Samsung Galaxy Nexus.<br/>
+*Description:* The same watermark was embedded into all photos, the edge model
+was deduced and the CPU stategy for duducing watermark from an edge model was
+applied. The strategy is described below.<br/>
+*Result:* **77,5%** correctly predicted pixels of watermark. 77,5% is good, but
+the pixels were much better predicted on top and pretty poorly on bottom. We can
 call it heaven effect.<br/>
 The below picture shows how the breaking algorithm manage to predict pixels of
 the watermark. Green pixels denotes predicted well and red ones are predicted
 wrongly.
-![Pixels prediction verdict](/images/hidden_watermark-diff.bmp)
+![Pixels prediction verdict](/images/hidden_watermark-diff.bmp)<br/>
 It turns out we can do something better. The things, which might go wrong are:
 * Wrongly predicted watermark from the edge model.
 * Too small corpus of picture. 636 instead of 166000.
 * We applied solution for Random Picture Model to Natural Picture Model
+
 Could the watermark be predicted wrongly from the edge model? We performed test
 in which we tried to guess hidden watermark in the corpus of images that
 contained exactly one picture, which was watermark itself. The solution
@@ -246,7 +248,7 @@ how would a histogram for *Y<sub>ij</sub>* would look like. It should have
 *Y<sub>ij</sub>* generated on a real data - the corpus of 636 images.
 For simplicity the below histogram containes information about horizontal values
 of *Y<sub>ij</sub>*<br/> 
-![Horizontal Y_{ij} histogram](/images/histograms/hori.png)
+![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
 We see the peaks around -0.75, 0, 0.75. The peaks are further. Setting
 &tau; to 0.3 (used in *delta* definition) we are getting result **99,6%**
 correctly predicted pixels on the corpus of 636 photos.
@@ -257,10 +259,10 @@ form.<br/>
 The below picture presents the histogram of values
 *|C<sup>k</sup><sub>i</sub> - C<sup>k</sup><sub>j</sub>|* aggregated over
 all possible edges *(i,j)* and 4 images' indices picked randomly as *k*.
-![X_a-X_b not watermarked](/images/histograms/diff_hist_no_water_4pics.png)
+![X_a-X_b not watermarked](/images/histograms/diff_hist_no_water_4pics.png)<br/>
 One nice fact to note is that if we make similiar histogram for watrmarked BMPs
 then we get:
-![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)
+![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)<br/>
 ### Deduction of watermark form the edge model
 We will perform different strategy on CPU than on GPU.
 #### CPU strategy
