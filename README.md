@@ -279,26 +279,31 @@ We initiate w<sub>i</sub> to 0:
 <pre>
 000
 000
-000</pre>
+000
+</pre>
 We pick some edge:
 <pre>
 000
 <b>00</b>0
-000</pre>
+000
+</pre>
 The edge model claims that *delta = 2* for those pixels. We update:
 <pre>
  0  0  0
 -1  1  0
- 0  0  0</pre>
+ 0  0  0
+</pre>
 In next step we pick another edge:
 <pre> 0  0  0
 -1  <b>1</b>  0
- 0  <b>0</b>  0</pre>
+ 0  <b>0</b>  0
+</pre>
 The edge model claims that *delta = 0* for those pixels. We update:
 <pre>
  0  0  0
 -1 0.5 0
- 0 0.5 0</pre>
+ 0 0.5 0
+</pre>
 And so on. The pseudo code for reinforcing by edge:
 <pre>
 def update(i, j, delta):
@@ -307,8 +312,8 @@ def update(i, j, delta):
     and watermark[i] + delta = watermark[j]
     and -1 <= watermark[i], watermark[j] <= 1 (possibly decrease delta to fit this condition)
 def reinforce(edge):
-  update(edge.endI, edge.endJ, delta(edge))</pre>
-
+  update(edge.endI, edge.endJ, delta(edge))
+</pre>
 #### CPU strategy
 On CPU we just select randomly an edge from the edge model.
 <pre>
