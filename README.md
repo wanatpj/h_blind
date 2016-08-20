@@ -379,6 +379,6 @@ If you are aware of any bugs or typos then feel free to contact me on gmail. I
 have the same id as I have on github.
 
 ## References
-[1] Ingemar Cox, Matthew Miller, Jeffrey Bloom, Jessica Fridrich, Ton Kalker; Digital Watermarking and Steganography
-[2] https://en.wikipedia.org/wiki/Watermark
-[3] Biermann, Christopher J. (1996). "7". Handbook of Pulping and Papermaking (2 ed.). San Diego, California, USA: Academic Press. p. 171. ISBN 0-12-097362-6.
+1. Ingemar Cox, Matthew Miller, Jeffrey Bloom, Jessica Fridrich, Ton Kalker; Digital Watermarking and Steganography
+2. https://en.wikipedia.org/wiki/Watermark
+3. Biermann, Christopher J. (1996). "7". Handbook of Pulping and Papermaking (2 ed.). San Diego, California, USA: Academic Press. p. 171. ISBN 0-12-097362-6.
