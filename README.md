@@ -10,12 +10,13 @@ sense that we discover approximately the hidden watermark. CPU and GPU
 implementations of the crack are provided.
 
 ## Concept of watermarking
-Quoting wikipedia:
+Quoting wikipedia<sup>[2]</sup>:
 > A watermark is an identifying image or pattern in paper that appears as
 > various shades of lightness/darkness when viewed by transmitted light (or when
 > viewed by reflected light, atop a dark background), caused by thickness or
-> density variations in the paper. Watermarks have been used on postage stamps,
-> currency, and other government documents to discourage counterfeiting.
+> density variations in the paper.<sup>[3]</sup> Watermarks have been used on
+> postage stamps, currency, and other government documents to discourage
+> counterfeiting.
 
 This concept has been introduced to digital world, so authors of an intelectual
 property could protect themself from thiefs or people who just forgot to point
