@@ -218,7 +218,7 @@ if this approach works in practise.
 Samsung Galaxy Nexus.<br/>
 *Description:* The same watermark was embedded into all photos, the edge model
 was deduced and the CPU stategy for duducing watermark from an edge model was
-applied. The strategy is described below.<br/>
+applied. The strategy is described later below.<br/>
 *Result:* **77,5%** correctly predicted pixels of watermark. 77,5% is good, but
 the pixels were much better predicted on top and pretty poorly on bottom. We can
 call it heaven effect.<br/>
@@ -226,34 +226,36 @@ The below picture shows how the breaking algorithm manage to predict pixels of
 the watermark. Green pixels denotes predicted well and red ones are predicted
 wrongly.
 ![Pixels prediction verdict](/images/hidden_watermark-diff.bmp)<br/>
-It turns out we can do something better. The things, which might go wrong are:
+It turns out we can do something better. The things, which might have gone wrong
+are:
 * Wrongly predicted watermark from the edge model.
-* Too small corpus of picture. 636 instead of 166000.
+* Too small corpus of pictures. 636 instead of 166000.
 * We applied solution for Random Picture Model to Natural Picture Model
 
-Could the watermark be predicted wrongly from the edge model? We performed test
-in which we tried to guess hidden watermark in the corpus of images that
-contained exactly one picture, which was watermark itself. The solution
+Could the watermark be predicted wrongly from the edge model? We performed a test
+in which we tried to guess a hidden watermark in the corpus of images that
+contained exactly one picture, which was a watermark itself. The solution
 predicted less that 1% of pixels correctly, which is very good solution (In case
 the algorithm predicts 50% of pixels correcly then it means that if works
 randomly, 0% and 100% correctness are expected mostly). So first dot is not
-a case<br/>
+a case.<br/>
 Could the corpus be too small. Yes, it could. However, it is hard to test
-the solution on a bigger corpus. The CPU solution is executing more that an hour
+the solution on a bigger corpus. The CPU solution is executing more than an hour
 for 636 pictures. More pictures - more time needed to verify. So the second dot
 might be the case, but we won't verify it.<br/>
 For the third dot the answer is: yes, it is the case. To understand that imagine
 how would a histogram for *Y<sub>ij</sub>* would look like. It should have
 3 peaks around -1/64, 0 and 1/64. Let us take a look on a histogram of
-*Y<sub>ij</sub>* generated on a real data - the corpus of 636 images.
+*Y<sub>ij</sub>* that was generated on a real data - the corpus of 636 images.
 For simplicity the below histogram containes information about horizontal values
 of *Y<sub>ij</sub>*<br/> 
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
 We see the peaks around -0.75, 0, 0.75. The peaks are further. Setting
 &tau; to 0.3 (used in *delta* definition) we are getting result **99,6%**
-correctly predicted pixels on the corpus of 636 photos.
-I believe that the location of the peaks could be understoob by considering the
-histogram of *|C<sup>\*</sup><sub>i</sub> - C<sup>\*</sup><sub>j</sub>|*.
+correctly predicted pixels of an embedded watermark while running on the corpus
+of 636 photos. I believe that the location of the peaks could be understood by
+considering the histogram of
+*|C<sup>k</sup><sub>i</sub> - C<sup>k</sup><sub>j</sub>|*.
 It looks like the exponetial while for Random Picture Model, it is of triangural
 form.<br/>
 The below picture presents the histogram of values
