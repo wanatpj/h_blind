@@ -343,10 +343,10 @@ rainforcing (up/down) it will skip vertices from every second row. For
 a horizontal reinforcing, it will skip vertices from every second column.
 In the implementation, there are only right and down reinforcing however, but
 the sets of vertices are switching. There will be four consequtive phases:<br/>
-1. First horizontal phase
-2. First vertical phase
-3. Second horizontal phase
-4. Second vertical phase
+  1. First horizontal phase
+  2. First vertical phase
+  3. Second horizontal phase
+  4. Second vertical phase
 
 ![Horizontal phases](/images/horizontal-phases.png)
 ![Vertical phases](/images/vertical-phases.png)
