@@ -347,6 +347,7 @@ the sets of vertices are switching. There will be four consequtive phases:<br/>
 2. First vertical phase
 3. Second horizontal phase
 4. Second vertical phase
+
 ![Horizontal phases](/images/horizontal-phases.png)
 ![Vertical phases](/images/vertical-phases.png)
 <pre>
