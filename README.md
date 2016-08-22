@@ -274,8 +274,9 @@ some E_BLIND watermark inside a set of images.
 ### Deduction of watermark form the edge model
 We will perform different strategy on CPU than on GPU. So the CPU/GPU algorithms
 will be slightly different and thus the results will differ. The essential step
-is to pick the edge and reinforce the watermark, so it reflects the delta for
-this edge in the best way. What does it mean? Let's see an example.<br/>
+for both is to pick the edge and reinforce the watermark, so it reflects
+the delta for this edge in the best way. What does it mean? Let's see
+an example.<br/>
 We initiate w<sub>i</sub> to 0:
 <pre>
 000
@@ -305,33 +306,55 @@ The edge model claims that *delta = 0* for those pixels. We update:
 -1 0.5 0
  0 0.5 0
 </pre>
-And so on. The pseudo code for reinforcing by edge:
+And so on. The pseudo code for reinforcing a watermark by edge:
 <pre>
 def update(i, j, delta):
-  change watermark[i] and watermark[j], so that
-    watermark[i] + watermark[j] stays the same 
-    and watermark[i] + delta = watermark[j]
-    and -1 <= watermark[i], watermark[j] <= 1 (possibly decrease delta to fit this condition)
+  change watermark<sub>i</sub> and watermark<sub>j</sub>, so that
+    watermark<sub>i</sub> + watermark<sub>j</sub> stays the same 
+    and watermark<sub>i</sub> + delta = watermark<sub>j</sub>
+    and -1 <= watermark<sub>i</sub>, watermark<sub>j</sub> <= 1 (possibly decrease delta to fit this condition)
 def reinforce(edge):
-  update(edge.endI, edge.endJ, delta(edge))
+  update(edge.i, edge.j, delta(edge))
 </pre>
+Reinforcing should keep the invariant that sum over all watermark<sub>i</sub>
+should be 0. Let us call it *0-sum invariant*.
 #### CPU strategy
 On CPU we just select randomly an edge from the edge model.
 <pre>
-for every vertex v: set watermark[v] = 0.
+for every vertex v: set watermark<sub>v</sub> = 0.
 repeat:
   edge = pick_random_edge(graph)
   reinforce(edge)
 </pre>
 #### GPU strategy
-...
+Let us imagine that we are a vertex of some edge model. There are potentialy
+4 edges that have an end point in us - called up, right, down, left edges. What
+we want to do is to iteratively reinforce a watermark by
+up/right/down/left/up/... edges. It is not that easy to do so parallely on GPU.
+If we perform this procedure concurrently for every vertex then it might happen
+that we will be reinforcing a watermark by two intersecting edges at the same
+time and that might cause undesirable effect. The key word is intersecting and
+the undesirable effect is not maintaining 0-sum invariant. The other problem is
+that we have to take care that if we are on the border of photo then we do not
+have 4 edges but less and so some of the reinforcing operation won't be
+available. To solve that problems we will be provided magical procedure
+getVertexId that will provide us relevant vertex. Basically, for a vertical
+rainforcing (up/down) it will skip vertices from every second row. For
+a horizontal reinforcing, it will skip vertices from every second column.
+In the implementation, there are only right and down reinforcing however, but
+the set of vertices are switching. There will be four consequtive phases:
+1. First horizontal phase
+2. First vertical phase
+3. Second horizontal phase
+4. Second vertical phase
+![Horizontal phases](/images/horizontal-phases.png)
+![Vertical phases](/images/vertical-phases.png)
 <pre>
-id = getVertexId()
 repeat:
-  parallel reinforce(up_edge(id))
-  parallel reinforce(right_edge(id))
-  parallel reinforce(down_edge(id))
-  parallel reinforce(left_edge(id))
+  parallel reinforce(up_edge(getVertexIdHorizontal1st()))
+  parallel reinforce(up_edge(getVertexIdVertical1st()))
+  parallel reinforce(up_edge(getVertexIdHorizontal2nd()))
+  parallel reinforce(up_edge(getVertexIdVertical2nd()))
 </pre>
 up_edge/right_edge/down_edge/left_edge return respectively the edge that
 starts in vertex id and goes up/right/down/left from the vertex.
@@ -383,3 +406,4 @@ have the same id as I have on github.
 1. Ingemar Cox, Matthew Miller, Jeffrey Bloom, Jessica Fridrich, Ton Kalker; Digital Watermarking and Steganography
 2. https://en.wikipedia.org/wiki/Watermark
 3. Biermann, Christopher J. (1996). "7". Handbook of Pulping and Papermaking (2 ed.). San Diego, California, USA: Academic Press. p. 171. ISBN 0-12-097362-6.
+4. https://documen.tician.de/pycuda/
