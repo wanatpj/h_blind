@@ -309,10 +309,10 @@ The edge model claims that *delta = 0* for those pixels. We update:
 And so on. The pseudo code for reinforcing a watermark by edge:
 <pre>
 def update(i, j, delta):
-  change watermark<sub>i</sub> and watermark<sub>j</sub>, so that
-    watermark<sub>i</sub> + watermark<sub>j</sub> stays the same 
-    and watermark<sub>i</sub> + delta = watermark<sub>j</sub>
-    and -1 <= watermark<sub>i</sub>, watermark<sub>j</sub> <= 1 (possibly decrease delta to fit this condition)
+  change w<sub>i</sub> and w<sub>j</sub>, so that
+    w<sub>i</sub> + w<sub>j</sub> stays the same 
+    and w<sub>i</sub> + delta = w<sub>j</sub>
+    and -1 <= w<sub>i</sub>, w<sub>j</sub> <= 1 (possibly decrease delta to fit this condition)
 def reinforce(edge):
   update(edge.i, edge.j, delta(edge))
 </pre>
@@ -338,11 +338,11 @@ the undesirable effect is not maintaining 0-sum invariant. The other problem is
 that we have to take care that if we are on the border of photo then we do not
 have 4 edges but less and so some of the reinforcing operation won't be
 available. To solve that problems we will be provided magical procedure
-getVertexId that will provide us relevant vertex. Basically, for a vertical
+getVertexId that will provide us a relevant vertex. Basically, for a vertical
 rainforcing (up/down) it will skip vertices from every second row. For
 a horizontal reinforcing, it will skip vertices from every second column.
 In the implementation, there are only right and down reinforcing however, but
-the set of vertices are switching. There will be four consequtive phases:
+the sets of vertices are switching. There will be four consequtive phases:<br/>
 1. First horizontal phase
 2. First vertical phase
 3. Second horizontal phase
@@ -356,8 +356,6 @@ repeat:
   parallel reinforce(up_edge(getVertexIdHorizontal2nd()))
   parallel reinforce(up_edge(getVertexIdVertical2nd()))
 </pre>
-up_edge/right_edge/down_edge/left_edge return respectively the edge that
-starts in vertex id and goes up/right/down/left from the vertex.
 
 ## Experimental speed of convergence
 #### TODO generate speed of convergence for GPU and CPU. Explain the difference
