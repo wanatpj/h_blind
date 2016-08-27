@@ -371,4 +371,36 @@ real	16m23.891s
 user	20m53.708s
 sys	2m28.140s
 Terminated
+8:
+real	12m34.716s
+user	15m25.660s
+sys	1m28.512s
+7:
+real	11m26.883s
+user	14m11.896s
+sys	1m14.824s
+6:
+real	11m5.075s
+user	12m56.908s
+sys	1m7.216s
+5:
+real	10m14.640s
+user	11m22.560s
+sys	1m11.584s
+4:
+real	11m26.446s
+user	12m6.492s
+sys	1m9.724s
+3:
+real	10m0.259s
+user	10m44.696s
+sys	0m56.224s
+2:
+real	9m51.037s
+user	10m9.300s
+sys	1m1.580s
+1:
+real	11m18.085s
+user	11m17.568s
+sys	1m15.560s
 
