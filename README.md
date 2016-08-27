@@ -157,8 +157,11 @@ You can read more about this watermarking system in the book:
 [Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
 ### Watermark embedding (E_BLIND)<br/>
 <pre>
-  input: c<sub>i</sub>, w<sub>i</sub>
-  wc<sub>i</sub> = c<sub>i</sub> + w<sub>i</sub>
+  input: c - an image, w - a watemark
+  output: wc - a watermarked image
+  algorithm:
+    for each pixel i:
+      wc<sub>i</sub> = c<sub>i</sub> + w<sub>i</sub>
 </pre>
 ### Watermark detecting (D_LC)<br/>
 <pre>
@@ -170,14 +173,24 @@ You can read more about this watermarking system in the book:
         watermark detected
       else
         watermark undetected
+  input: c - a potentialy watemarked image , w - a reference watermark
+  output: "watermark detected" if w appears on c else "watermark undetected"
+  algorithm:
+    let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub>
+      in
+        if |lc| > 0.7
+        then
+          watermark detected
+        else
+          watermark undetected
 </pre>
 Let us see the system in use:<br/>
 *Not watermarked picture*
-![Sample watermark](/images/example.jpg)
-*Sample watermark*
-![Sample watermark](/watermark.bmp)
+![Not watermarked](/images/example.jpg)
+*A watermark*
+![Watermark](/watermark.bmp)
 *Watermarked picture*
-![Sample watermark](/images/example_watermarked.bmp)
+![Watermarked](/images/example_watermarked.bmp)
 Unpossible to spot a difference with the naked eye.
 Fact to note is that for the purpose of this document, we are saving files as
 BMP so the compression not to eat the watermark.
@@ -189,7 +202,7 @@ then if we pick some two adjacent pixels *i*, *j* on the image then<br/>
 *Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>))*.<br/>
 However, if the image is watermarked with E_BLIND and
 *w<sub>i</sub> > w<sub>j</sub>* then we expect that<br/>
-*Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>)) + epsilon, for some epsilon > 0 that is common for every i,j*.<br/>
+*Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>)) + epsilon, for some epsilon > 0 that is common for every i, j*.<br/>
 We hope that epsilon will be big enough.<br/>
 The above equations are true in Random Picture Model and we believe them to be
 true for Natural Picture Model or almost true. By almost true we mean that
@@ -252,7 +265,7 @@ how would a histogram for *Y<sub>ij</sub>* would look like. It should have
 3 peaks around -1/64, 0 and 1/64. Let us take a look on a histogram of
 *Y<sub>ij</sub>* that was generated on a real data - the corpus of 636 images.
 For simplicity the below histogram containes information about horizontal values
-of *Y<sub>ij</sub>*<br/> 
+of *Y<sub>ij</sub>*.<br/> 
 ![Horizontal Y_{ij} histogram](/images/histograms/hori.png)<br/>
 We see the peaks around -0.75, 0, 0.75. The peaks are further than in
 Random Picute Model. Setting &tau; to 0.3 (used in *delta* definition) we are
@@ -321,7 +334,7 @@ should be 0. Let us call it *0-sum invariant*.
 #### CPU strategy
 On CPU we just select randomly an edge from the edge model.
 <pre>
-for every vertex v: set watermark<sub>v</sub> = 0.
+for every vertex i: set w<sub>i</sub> = 0.
 repeat:
   edge = pick_random_edge(graph)
   reinforce(edge)
@@ -392,6 +405,9 @@ C'<sup>k</sup> = C<sup>k</sup> + w. In fact,
 C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
 3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75 when
 considering Natural Picture Model.
+4. The tests for breaking E_BLIND accuracy were performed only on one watermark.
+They should be performed on many such watermarkes and we should claim
+the averaged accuracy.
 
 ## Epilogue
 You can make E_BLIND resistant from this attack if you have a set of watermarks
