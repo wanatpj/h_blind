@@ -22,7 +22,7 @@ This concept has been introduced to digital world, so authors of intellectual
 properties (IP) could protect themselves from thieves or people who just
 forgot to point the source. In last decade when more and more things are
 being computerized, there is a need to protect the things from being copied
-and pasted somewhere else in case they should not be moved from origin.
+and pasted somewhere else in case they should not be moved from origin.<br/>
 ![Example of a watermark in the twenty euro banknote](https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg)<br/>
 *Source https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg*<br/>
 Usually when a person thinks about a watermark on images, they imagine
@@ -48,9 +48,9 @@ a digital work, watermarks every copy of the digital work with a different
 watermark and sends the watermarked contents to critics. Whenever a critic
 makes a leak, we can identify him by checking if the leaked work contains
 a watermarked associated with him.
-![Leak by critic](/images/simple-leak-detection.png)
+![Leak by critic](/images/simple-leak-detection.png)<br/>
 *Below picture would be a picture leaked by Paweł Wanat*
-![Leak by critic](/images/example-critic.jpg)
+![Leak by critic](/images/example-critic.jpg)<br/>
 #### Content tracking
 Film production company makes movies. They already have a big portfolio
 that contains hundreds of digital works. They know that from time to time
@@ -66,7 +66,7 @@ with every movie from the Internet. That would give us *n · m* comparisons.
 However, if we watermark movies before, then all we have to do is to check if
 producer’s watermark appears on a movie from the Internet. That requires
 merely *m* checks.
-![Fast tracking of images](/images/watermark-tracking.png)
+![Fast tracking of images](/images/watermark-tracking.png)<br/>
 Solution to this problem might be used by photographers who post their
 photos in the Internet. It happens frequently that people are reposting their
 pictures on their feeds in social media without pointing the source.
@@ -87,9 +87,9 @@ every broker we watermark the work using different watermark. Then there
 is a second level of watermarking when brokers distribute the work to the
 end users. When some end user will make a leak then we identify firstly the
 broker and the broker identifies the end user.
-![Leak by end user](/images/leak-detection-with-a-broker.png)
+![Leak by end user](/images/leak-detection-with-a-broker.png)<br/>
 *Below picture would be a picture leaked by Paweł Wanat through Company G*
-![Leak by critic](/images/example-end-user.jpg)
+![Leak by critic](/images/example-end-user.jpg)<br/>
 It is worth to mention how to identify an end user if they recorded hid-
 denly the movie in a cinema. At first we would have three layers of water-
 marking: company wide watermark, physical address of subordinate, date
@@ -110,15 +110,14 @@ denotes *w<sub>i</sub> = −1*. Below we list these definition and additional on
 can return to them quickly, if you forget any.
 <pre>
 iff – if and only if
-*abs(x)* = *−x* if *x < 0* else *x*
-*w* – watermark, *w<sub>i</sub>* in *{−1, 1}*
-*c/c<sup>k</sup>* – content image/*k*-th content image
-*c<sub>i</sub>/c<sup>k</sup><sub>i</sub>* – value of pixel *i* in image *c/c<sup>k</sup>*; *c<sub>i</sub>/c<sup>k</sup><sub>i</sub>* in *{0, 1, ..., 255}*
-*E(X)* – expected value of random variable *X*
-*Var(X)* – variance of random variable *X*
-*W* – random
-*P* watermark
-*A·B = sum{A<sub>i</sub>B<sub>i</sub> : all i}* – dot product
+abs(x) = −x if x &lt; 0 else x
+w – watermark, w<sub>i</sub> in {−1, 1}
+c/c<sup>k</sup> – content image/k-th content image
+c<sub>i</sub>/c<sup>k</sup><sub>i</sub> – value of pixel i in image c/c<sup>k</sup>; c<sub>i</sub>/c<sup>k</sup><sub>i</sub> in {0, 1, ..., 255}
+E(X) – expected value of random variable X
+Var(X) – variance of random variable X
+W – random watermark
+A·B = sum{A<sub>i</sub>B<sub>i</sub> : all i} – dot product
 lc(A, B) = linear correlation(A, B) = (A·B) / length(A)
 Chebyshev's inequality: Pr(|X-E(X)| >= eps) <= Var(X)/(eps^2)
 </pre>
@@ -214,6 +213,7 @@ Picture Model. Random Picture Model is a probability space over the
 set of images in which
   * the value of every pixel has uniform distribution on *{0, 1, ..., 255}*
   * the values are mutually independent
+
 Natural Picture Model is a probability space over the set of images that is
 induced by reality. So we don’t really know how it looks like, but we will try
 to observe some of it’s properties and then based on the analysis of Random
