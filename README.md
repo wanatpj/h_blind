@@ -152,14 +152,6 @@ content and a watermark and in case it reaches some threshold (authors
 take 0.7 to get negligibly-small false-positive rate) then it reports a positive
 outcome of detection. In the below code, N denotes number of pixels.<br/>
 <pre>
-  input: c<sub>i</sub>, w<sub>i</sub>
-  let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub>
-    in
-      if |lc| > 0.7
-      then
-        watermark detected
-      else
-        watermark undetected
   input: c - a potentialy watemarked image , w - a reference watermark
   output: "watermark detected" if w appears on c else "watermark undetected"
   algorithm:
