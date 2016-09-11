@@ -18,16 +18,19 @@ Quoting wikipedia<sup>[2]</sup>:
 > postage stamps, currency, and other government documents to discourage
 > counterfeiting.
 
-This concept has been introduced to digital world, so authors of an intelectual
-property could protect themself from thiefs or people who just forgot to point
-the source. In last decade when more and more things are being computerized,
-there is a need to protect the things from being copied and paste somewhere
-else in case they should not be moved from origin.
-![Watermark on note](https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg)<br/>
+This concept has been introduced to digital world, so authors of intellectual
+properties (IP) could protect themselves from thieves or people who just
+forgot to point the source. In last decade when more and more things are
+being computerized, there is a need to protect the things from being copied
+and pasted somewhere else in case they should not be moved from origin.
+![Example of a watermark in the twenty euro banknote](https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg)<br/>
 *Source https://upload.wikimedia.org/wikipedia/commons/8/82/Watermarks_20_Euro.jpg*<br/>
-In this paper, we will focus on watermarkes that cannot be seen with the naked
-eye. However some examples will contain visible watermarks to make understading
-cleaner.
+Usually when a person thinks about a watermark on images, they imagine
+partially transparent text that can be seen directly. Techniques have been
+developed to remove such manually. To protect IPs, better methods had to
+be created, so that removing a watermark should be considered hard. In this
+paper, we embeds watermarks imperceptible to human eye. However, some
+examples will contain visible watermarks to make understanding cleaner.
 
 ## Motivations for watermarking of digital content
 Let us consider 3 possible use cases of watermarking digital content.
@@ -36,126 +39,108 @@ Film production company makes a film. They claim that their new movie is
 awesome. However, they want to make money, so they want people to pay for
 watching them in cinema. Life is tough and nobody will pay for a bad movie.
 Thus the company wants to send the movie to several film critics, so they
-give a good recommendation and so they could earn money. However the company is
-afraid that if they share the movie with some critic then they could share the
-movie onwards. To prevent critic from sharing, the company can watermark the
-movie, so they will know who made a leak in case of any.<br/>
-The below picture presents the exact solution to above problem. Producer who
-owns a digital work, watermarks every copy of the digital work with different
-watermark and sends the watermarked content to film critics. Whenever a film
-critic makes a leak, we can identify him by checking if the leaked work contains
+give a good recommendation and so they could earn money. However, the
+company is afraid that if they share the movie with critics then they could
+share the movie onwards. To prevent critics from sharing, the company can
+watermark every copy, so they will know who made a leak in case of any.<br/>
+The below schema explains the solution to presented problem. Producer who owns
+a digital work, watermarks every copy of the digital work with a different
+watermark and sends the watermarked contents to critics. Whenever a critic
+makes a leak, we can identify him by checking if the leaked work contains
 a watermarked associated with him.
 ![Leak by critic](/images/simple-leak-detection.png)
 *Below picture would be a picture leaked by Paweł Wanat*
 ![Leak by critic](/images/example-critic.jpg)
 #### Content tracking
-Film production company makes movies. They already have big portfolio that
-contains hundreds of digital works. They know that from time to time some
-malicious person uploads their works to YouTube. They are very sad about that.
-Verifying that a single work found in the Internet belongs to them is costly, so
-before any release
-they watermark all their works with single watermark and they just check, if the
-work from the Internet containes their watermark.<br/>
-On the below picture, we can find that that the producer has n movies and there
-are m movies in the Intenet that could potentialy belong to the producer. The
-brute force algorithm would have to compare every producer movie with every
-movie from the Internet. That would give us nm comparisons. However, when we
-watermark picure before then all we have to do is to check if producers's
-watermark apears on the Internet content. That gives us linear number of checks.
+Film production company makes movies. They already have a big portfolio
+that contains hundreds of digital works. They know that from time to time
+some malicious people upload their movies to YouTube. They are very sad
+about that. Verifying that a single movie found on YouTube belongs to
+them is costly, so before any release they watermark all their movies with
+single watermark and they just check, if a movie from YouTube contains
+their watermark.<br/>
+On the below schema, we can find that the producer has *n* movies and there
+are *m* movies in the Internet that could potentially belong to the producer.
+The brute force algorithm would have to compare every producer’s movie
+with every movie from the Internet. That would give us *n · m* comparisons.
+However, if we watermark movies before, then all we have to do is to check if
+producer’s watermark appears on a movie from the Internet. That requires
+merely *m* checks.
 ![Fast tracking of images](/images/watermark-tracking.png)
-Solution to this problem might be used by photographers who post their works in
-the Internet. It happens frequently that people are reposting their picture on
-their feeds in social media without pointing the source.
+Solution to this problem might be used by photographers who post their
+photos in the Internet. It happens frequently that people are reposting their
+pictures on their feeds in social media without pointing the source.
 #### End user leak detection
-Film production company made a movie. They want to sell their movie to some
-end users, via cinemas or other film brokers. They are afraid that some end user
-will find a way to download the content and then share it somewhere in the
-Internet. They want to secure themself, so they always can identify the end user
-who made a leak. They decided that they will watermark the movie before sending
-to any broker and they ask the brokers to watermark it again before sending to
-any user. When the leak occur, the company will identify the broker and the
-broker will identify the end user.<br/>
-The below picture explains the process of identifing the user in case of an
-Internet sreaming film broker. At first we have a first level of watermarking.
-We send wm<sub>i</sub>(DIGITAL WORK) to broker company i.
-wm<sub>i</sub>(DIGITAL WORK) denotes watermarked version of DIGITAL WORK. Index
-i denotes that for every broker we watermark the work using different watermark.
-Then there is a second level of watermarking when brokers distribute the work to
-the end users. When some end user will make a leak then we identify firstly the
+Film production company made a movie. They want to sell their movie to
+some end users, via cinemas or other film brokers. They are afraid that some
+end user will find a way to download or record the content and then share it
+somewhere in the Internet. They want to secure themselves, so they always
+can identify the end user who made a leak. They decided that they will
+watermark the movie before sending to any broker and they ask the brokers
+to watermark it again before sending to any user. When the leak occur, the
+company will identify the broker and the broker will identify the end user.<br/>
+The below schema explains the process of identifying the user in case of an Internet
+streaming film broker. At first we have a first level of watermarking. We
+send *wm<sub>i</sub>(DIGITAL WORK)* to broker company *i* where *wm<sub>i</sub>(DIGITAL WORK)*
+denotes watermarked version of *DIGITAL WORK* and index *i* ensures that for
+every broker we watermark the work using different watermark. Then there
+is a second level of watermarking when brokers distribute the work to the
+end users. When some end user will make a leak then we identify firstly the
 broker and the broker identifies the end user.
 ![Leak by end user](/images/leak-detection-with-a-broker.png)
 *Below picture would be a picture leaked by Paweł Wanat through Company G*
 ![Leak by critic](/images/example-end-user.jpg)
-It is worth to mention how to identify end users if they recorded hiddenly
-the movie in a cinema. At first we would have three layers of watermarking:
-company wide watermark, physical address of subordinate, date and room. Then
-they would be able to identify the seat of the end user by geometric properties
-of recorded screen.
+It is worth to mention how to identify an end user if they recorded hid-
+denly the movie in a cinema. At first we would have three layers of water-
+marking: company wide watermark, physical address of subordinate, date
+and room. Then they would be able to identify the seat of the end user by
+geometric properties of recorded screen.
 ## Background
-For theoretical simplicity, we will live in the world of 2592x1944
-grayscale images. When we consider a certain image, c<sub>i</sub> denotes
-a color of pixel i. We call an image to be a watermark if it consists of black
-or white pixels only. We associate a vector w<sub>i</sub> with watermark, so
-w<sub>i</sub> in {1, -1}<sup>2592x1944</sup> and (w<sub>i</sub> = 1 iff pixel i
-is black). This kind of definition for watermark is common for some set of
-watermarking systems. By watrmarking system we understand a pair of embedding
-and detecting algorithms. The below picture discribes data flow in watermarking
-system. At first embedding algorithm takes a digital content and a watermark.
-Having this it produces a watermakred version of the digital content.
-The rest of work is done by a detecting algorithm. The input for the detecting
-algorithm is the watermark and a digital content. If the digital content was
-watermarked with the watermark then detecting algorithm should replay:
-"Yes, this work contains the watermark" otherwise
-"No, the watermark not detected".
+All the methods shown later will be implemented in source codes for RGB im-
+ages. However, for theoretical simplicity, we are considering grayscale images
+only, i.e. every pixel is an integer value from *0* to *255*. Another assumption
+is that all images are of the same size *width × height*. Later on, *c* denotes
+an image, *c<sup>k</sup>* denotes *k*-th input image, *c<sub>i</sub>* denotes *i*-th pixel of an image.
+It is worth to mention that we are using *2D* indices, so when writing *i*-th
+pixel, the variable i is *2D*. Let w be a vector in *{1, −1}<sup>width×height</sup>* space,
+called a watermark and let *W* be a random vector uniformly distributed over
+*{1, −1}<sup>width×height</sup>*. In the source codes we will be treating a watermark as
+a *2*-color image, where a black pixel *i* denotes *w<sub>i</sub> = 1* and a white pixel *i*
+denotes *w<sub>i</sub> = −1*. Below we list these definition and additional ones, so you
+can return to them quickly, if you forget any.
+<pre>
+iff – if and only if
+*abs(x)* = *−x* if *x < 0* else *x*
+*w* – watermark, *w<sub>i</sub>* in *{−1, 1}*
+*c/c<sup>k</sup>* – content image/*k*-th content image
+*c<sub>i</sub>/c<sup>k</sup><sub>i</sub>* – value of pixel *i* in image *c/c<sup>k</sup>*; *c<sub>i</sub>/c<sup>k</sup><sub>i</sub>* in *{0, 1, ..., 255}*
+*E(X)* – expected value of random variable *X*
+*Var(X)* – variance of random variable *X*
+*W* – random
+*P* watermark
+*A·B = sum{A<sub>i</sub>B<sub>i</sub> : all i}* – dot product
+lc(A, B) = linear correlation(A, B) = (A·B) / length(A)
+Chebyshev's inequality: Pr(|X-E(X)| >= eps) <= Var(X)/(eps^2)
+</pre>
+By watermarking system we understand a pair of an embedding algorithm
+and a detecting algorithm. Figure 7 describes data flow in a watermarking
+system. At first embedding algorithm takes a digital content and a water-
+mark. Having them, it produces a watermarked version of the digital con-
+tent. The detecting algorithm takes a watermark and some digital content.
+If the digital content contains the watermark, then it returns ”Yes”, other-
+wise ”No”. The solid line presents data flow for embedding algorithms. The
+dashed and dashed-dotted lines presents data flow for detecting algorithms
+when the answer is positive. The dotted and dashed-dotted lines presents
+data flow for detecting algorithms when the answer is negative.
 ![Embedding/detecting algorithm](/images/embedding-detecting-algorithm.png)
 
-## Definitions and lemmas
-<pre>
-iff := if and only if
-abs(x) = -x if x &lt; 0 else x
-E(X) - expected value of random variable X
-Var(X) - variance of random variable X
-w - watermark, w_i in {-1, 1}
-c, c<sup>k</sup> - content image, k-th content image
-c<sub>i</sub>, c<sup>k</sup><sub>i</sub> in 0..255 - value of pixel i in image c
-C - random variable that denotes an image
-N = 2592*1944 - number of pixels
-B = number of images
-dot_product(A, B) = \sum_i A[i]*B[i] - in case of images, i is 2 dimensional index
-lc(A, B) = linear_correlation(A, B) = dot_product(A, B)/length(A)\
-    if length(A) == length(B) else raise Exception()
-Chebyshev's inequality: Pr(|X-E(X)| >= eps) <= Var(X)/(eps^2)
-Random Picture Model: Probability space over the set of images in which
-    the value of every pixel has uniform distribution on {0, 1, ..., 255} and
-    the values are mutually independent.
-Natural Picture Model: Probability space over the set of images that is induced
-    by reality.
-</pre>
-Just let us point out that we don't really know how the Natural Picture Model
-looks like, so we will perform analysis on Random Picture Model and then we will
-try to understand why the same theorems work for Natural Picture Model.
 ## E_BLIND/D_LC watermarking system
-We consider the world of certain size pictures (par example 2592x1944). All
-images are in grayscale, so every pixel has an integer value from 0 to 255.
-The watermark is standard white/black image where black denotes 1 and white
-denotes -1.<br/>
-The **embeding** algorithm is sumation of two matrices. So any pixel in
-a watermarked content will differ by 1 from the original pixel.<br/>
-The **detecting** algorithm checks the value of linear correlation between
-a digital content and the watermark and in case it reaches some threshold
-(let us take 0.7) then it reports a positive outcome of detection.<br/>
-Why does it work? A linear correlation between a watermark and the watermark
-itself is 1. A linear correlation between a watermark and
-an **un**watermarked content is around 0. Why? Assuming that watermark is
-randomly generated then a dot product of *c* and *w* is random walk arround 0
-(w<sub>i</sub> indicates a direction of walk and c<sub>i</sub> indicates
-a magnitude). So abs(E(the dot product)) is upper bounded by const*sqrt(N) and
-thus abs(E(the linear correlation)) is upper bounded by const/sqrt(N).<br/>
-Then a linear correlation between watermark and watermarked content is around
-1.<br/>
-You can read more about this watermarking system in the book:
-[Digital Watermarking and Steganography](https://books.google.pl/books?id=JZQLpzihtecC) <br/>
-### Watermark embedding (E_BLIND)<br/>
+Blind Embedding (E_BLIND) and Linear Correlation Detection (D_LC) is
+the simplest watermarking system presented in Digital Watermarking and
+Steganography [1] book. For this system, a watermark should be a randomly
+generated vector of *{1, −1}<sup>width×height</sup>*.<br/>
+The **embeding** algorithm is summation of two matrices. So any pixel in a
+watermarked content will differ by 1 from the original pixel.<br/>
 <pre>
   input: c - an image, w - a watemark
   output: wc - a watermarked image
@@ -163,7 +148,10 @@ You can read more about this watermarking system in the book:
     for each pixel i:
       wc<sub>i</sub> = c<sub>i</sub> + w<sub>i</sub>
 </pre>
-### Watermark detecting (D_LC)<br/>
+The **detecting** algorithm checks value of linear correlation between a digital
+content and a watermark and in case it reaches some threshold (authors
+take 0.7 to get negligibly-small false-positive rate) then it reports a positive
+outcome of detection. In the below code, N denotes number of pixels.<br/>
 <pre>
   input: c<sub>i</sub>, w<sub>i</sub>
   let lc = \sum<sub>i</sub> c<sub>i</sub>*w<sub>i</sub>
@@ -184,6 +172,24 @@ You can read more about this watermarking system in the book:
         else
           watermark undetected
 </pre>
+To get better understanding why it works, we should consider following
+points:
+  1. linear correlation between a watermark and itself is 1
+  2. having a watermark randomly generated, linear correlation between a
+watermark and an unwatermarked image is expected to be around 0 
+  3. having a watermark randomly generated, linear correlation between a
+watermark and a watermarked image is expected to be around 1
+
+Point 1 is true because *lc(w,w) = (W · c)/N = 1*.<br/>
+To show point 2, we take random watermark *W* and we consider
+*abs(E(lc(W, c))) = abs(E((W·c)/N)). Observe that *W·c* is random walk around
+*0*, cause *c<sub>i</sub>* is magnitude *W<sub>i</sub>* is direction, all
+*W<sub>i</sub>* are mutually independent and
+*Pr(W<sub>i</sub> = −1) = Pr(W<sub>i</sub> = 1) = 0.5*. Thus *abs(E(W·c))* is
+likely to be upper bounded by *const·sqrt(N)* and so *abs(E(lc(W, c)))* is
+likely to be upper bounded by *const/sqrt(N)*. So the point is true.<br/>
+The last point is now simply true:<br/>
+*lc(c + W, W) = lc(c, W) + lc(W, W) = lc(c, W) + 1 ≈ 1*<br/>
 Let us see the system in use:<br/>
 *Not watermarked picture*
 ![Not watermarked](/images/example.jpg)
@@ -191,18 +197,34 @@ Let us see the system in use:<br/>
 ![Watermark](/watermark.bmp)
 *Watermarked picture*
 ![Watermarked](/images/example_watermarked.bmp)
-Unpossible to spot a difference with the naked eye.
-Fact to note is that for the purpose of this document, we are saving files as
-BMP so the compression not to eat the watermark.
+It is impossible to spot a difference with the naked eye between two bottom
+images. For the purpose of this document, we are saving files in a bitmap so
+the compression not to eat the watermark.<br/>
+It is worth to mention that E_BLIND allows to subtract a watermark
+from an image, i.e. *wc<sub>i</sub> = c<sub>i</sub> − w<sub>i</sub>* , but then D_LC compares threshold to
+*abs(lc(c, w))* instead of *lc(c, w)*. This is a mechanism to pass a hidden message
+to a watermarked content. Basically, if we watermark with *wc<sub>i</sub> = c<sub>i</sub> + w<sub>i</sub>*
+formula then it means message *0*, if we use *wc<sub>i</sub> = c<sub>i</sub> − w<sub>i</sub>* formula then it
+means message *1*. To read the message from the watermarked content, we
+just check if linear correlation is positive or negative.
 
 ## Breaking E_BLIND
-Let us start from introducing the trick that will break the E_BLIND method.
-Basically, our believe is that if we take random picture *c* from the Internet
-then if we pick some two adjacent pixels *i*, *j* on the image then<br/>
-*Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>))*.<br/>
-However, if the image is watermarked with E_BLIND and
-*w<sub>i</sub> > w<sub>j</sub>* then we expect that<br/>
-*Pr(grayscale(c<sub>i</sub>) &gt; grayscale(c<sub>j</sub>)) = Pr(grayscale(c<sub>i</sub>) &lt; grayscale(c<sub>j</sub>)) + epsilon, for some epsilon > 0 that is common for every i, j*.<br/>
+We define here two probabilistic objects: Random Picture Model and Natural
+Picture Model. Random Picture Model is a probability space over the
+set of images in which
+  * the value of every pixel has uniform distribution on *{0, 1, ..., 255}*
+  * the values are mutually independent
+Natural Picture Model is a probability space over the set of images that is
+induced by reality. So we don’t really know how it looks like, but we will try
+to observe some of it’s properties and then based on the analysis of Random
+Picture Model we will try to make some conclusions.
+Let us present the trick that will break the E_BLIND method. Basically,
+in Random Picture Model if we take random picture *C* and if we pick two
+adjacent pixels *i* and *j* from the picture then<br/>
+*Pr(c<sub>i</sub> &gt; c<sub>j</sub>) = Pr(c<sub>i</sub> &lt; c<sub>j</sub>)*.<br/>
+However, if the image *C* is watermarked with E_BLIND (so *C = O + w*, for
+some *O* from RPM) and if *w<sub>i</sub> > w<sub>j</sub>* then<br/>
+*Pr(c<sub>i</sub> &gt; c<sub>j</sub>) = Pr(c<sub>i</sub> &lt; c<sub>j</sub>) + epsilon*, for some *epsilon > 0* that is common for every *i* and *j*.<br/>
 We hope that epsilon will be big enough.<br/>
 The above equations are true in Random Picture Model and we believe them to be
 true for Natural Picture Model or almost true. By almost true we mean that
