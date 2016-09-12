@@ -90,14 +90,14 @@ broker and the broker identifies the end user.
 ![Leak by end user](/images/leak-detection-with-a-broker.png)<br/>
 *Below picture would be a picture leaked by Paweł Wanat through Company G*
 ![Leak by critic](/images/example-end-user.jpg)<br/>
-It is worth to mention how to identify an end user if they recorded hid-
-denly the movie in a cinema. At first we would have three layers of water-
-marking: company wide watermark, physical address of subordinate, date
+It is worth to mention how to identify an end user if they recorded hiddenly
+the movie in a cinema. At first we would have three layers of watermarking:
+company wide watermark, physical address of subordinate, date
 and room. Then they would be able to identify the seat of the end user by
 geometric properties of recorded screen.
 ## Background
-All the methods shown later will be implemented in source codes for RGB im-
-ages. However, for theoretical simplicity, we are considering grayscale images
+All the methods shown later will be implemented in source codes for RGB images.
+However, for theoretical simplicity, we are considering grayscale images
 only, i.e. every pixel is an integer value from *0* to *255*. Another assumption
 is that all images are of the same size *width × height*. Later on, *c* denotes
 an image, *c<sup>k</sup>* denotes *k*-th input image, *c<sub>i</sub>* denotes *i*-th pixel of an image.
@@ -119,15 +119,15 @@ Var(X) – variance of random variable X
 W – random watermark
 A·B = sum{A<sub>i</sub>B<sub>i</sub> : all i} – dot product
 lc(A, B) = linear correlation(A, B) = (A·B) / length(A)
-Chebyshev's inequality: Pr(|X-E(X)| >= eps) <= Var(X)/(eps^2)
+Chebyshev's inequality: Pr(|X-E(X)| &geq; eps) &leq; Var(X)/(eps^2)
 </pre>
 By watermarking system we understand a pair of an embedding algorithm
 and a detecting algorithm. Figure 7 describes data flow in a watermarking
-system. At first embedding algorithm takes a digital content and a water-
-mark. Having them, it produces a watermarked version of the digital con-
-tent. The detecting algorithm takes a watermark and some digital content.
-If the digital content contains the watermark, then it returns ”Yes”, other-
-wise ”No”. The solid line presents data flow for embedding algorithms. The
+system. At first embedding algorithm takes a digital content and a watermark.
+Having them, it produces a watermarked version of the digital content.
+The detecting algorithm takes a watermark and some digital content.
+If the digital content contains the watermark, then it returns ”Yes”, otherwise
+”No”. The solid line presents data flow for embedding algorithms. The
 dashed and dashed-dotted lines presents data flow for detecting algorithms
 when the answer is positive. The dotted and dashed-dotted lines presents
 data flow for detecting algorithms when the answer is negative.
