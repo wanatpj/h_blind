@@ -252,10 +252,113 @@ denote our prediction about the watermark difference on pixel *i* and *j*, i.e.
 *w<sub>i</sub> + delta(i, j) = w<sub>j</sub>* if we predicted correctly.
 ### Computing *delta*
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
-The idea for deducing the edge model from the input data is to take
-*C<sup>k</sup> = c<sup>k</sup>* and evaluate *delta* based on that. Let us see
-if this approach works in practise.
-#### Performed test
+
+### Computing an approximated watermark form *delta*
+In this section two algorithms are described. Both of them are heuristic,
+but we will see that they give good results, i.e. the fraction of correctly
+predicted pixels of watermark is large enough. The first algorithm is for
+CPU and the other one is for GPU. Both of them use update function, which
+basically should transform a current solution to a better one. The GPU
+version execute many updates in parallel, so we need to take care that all
+threads are synchronized well.<br/>
+At first, we consider relaxed problem, i.e. having delta, we want to determine
+a correspondent vector w *0* in *[−1, 1]<sup>width×height</sup>*. Then we start by setting
+*w' = 0*. We perform some updates in order defined later. Having updated
+vector *w'<sub>i</sub>* computed, we return *w* as an approximated watermark where:<br/>
+<pre>
+w<sub>i</sub> = 1 if w'<sub>i</sub> &geq; 0 else -1
+</pre>
+Let us describe the update function. It gets adjacent pixels *i* and *j* plus a
+current solution *w'* as an input and modify provided *w'* so that:
+  * the value *w'<sub>k</sub>* remains untouched for *k* different than *i* and *j*
+  * let *sum = w<sub>i</sub>' + w<sub>j</sub>'* and let *delta'* be the closest number to *delta(i, j)* such that
+    1. abs(delta') &leq; abs(delta(i,j))
+    2. (sum - delta')/2 in [-1, 1]
+    3. (sum + delta')/2 in [-1, 1]
+  then change w<sub>i</sub>' and w<sub>j</sub>' so w<sub>i</sub>' = (sum - delta')/2 and w<sub>j</sub>' = (sum + delta')/2.
+
+Such *delta'* always exists because *delta' = 0* fulfills these conditions.
+To formalize the above, we give a pseudocode.
+<pre>
+  def update(w', i, j):
+    sum = w'[i] + w'[j]
+    delta' = max(min(delta(i, j), 2 - sum, 2 + sum),
+                 -2 - sum,
+                 -2 + sum)
+    w'[i] = (sum - delta') / 2
+    w'[j] = (sum + delta') / 2
+</pre>
+Note that *update* procedure preserves invariant that sum of *w'<sub>i</sub>* over all
+pixels *i* equals *0*. It is important for GPU solution to perform updates in a such
+way that no pixel is updated at the same time by two or more calls.<br/>
+Let us see an example of several updates on initiated *w' = 0*. We start with:
+<pre>
+000
+000
+000
+</pre>
+Let us pick two adjacent pixels to update:
+<pre>
+000
+<b>00</b>0
+000
+</pre>
+Assume that *delta = 2* for these pixels then the updated solution *w'* is:
+<pre>
+ 0  0  0
+-1  1  0
+ 0  0  0
+</pre>
+Let us pick another two adjacent pixels:
+<pre> 0  0  0
+-1  <b>1</b>  0
+ 0  <b>0</b>  0
+</pre>
+Assume that $delta = 0$ for these pixels then:
+<pre>
+ 0  0  0
+-1 0.5 0
+ 0 0.5 0
+</pre>
+And so on.<br/>
+For CPU we randomly pick adjacent pixels *i* and *j* to
+perform *update* on them. 
+<pre>
+  for every pixel i: set w'[i] = 0
+  repeat (10*width*height) times:
+    i, j = pick_adjacent_pixels_at_random(width, height)
+    update(w', i, j)
+  get w from w'
+</pre>
+On GPU we have a different approach. We want to make parallel $update$ calls and
+do it in such way that in the same time no two updates would intersect. To make
+this happen, we call some of pixels active and the rest call inactive.
+Iteratively, we perform horizontal phases and vertical phases. On
+below pictures, phases are
+shown. Yellow pixels are the active ones. On their behalf, updates are
+performed. In a horizontal phase, every active pixel perform an update on
+itself and their right neighbour. In a vertical phase, every pixel perform
+an update on itself and their bottom neighbour. In first horizontal phase,
+the first column consists of active pixels and so every second column. In second
+horizontal phase active pixels are these, which were inactive in the first
+phase. If a number of columns is odd then pixels from the last column are inactive
+in both horizontal phases. For vertical phases, active pixels are grouped
+similarly but in rows.
+![Horizontal phases](/images/horizontal-phases.png)
+![Vertical phases](/images/vertical-phases.png)
+
+<pre>
+  for every pixel i: set w'[i] = 0
+  repeat 10 times:
+    parallel update(w', me_and_right(get_id_horizontal_1st()))
+    parallel update(w', me_and_bottom(get_id_vertical_1st()))
+    parallel update(w', me_and_right(get_id_horizontal_2nd()))
+    parallel update(w', me_and_bottom(get_id_vertical_2nd()))
+  get w from w'
+</pre>
+
+
+### Performed test
 *Input:* A corpus of 626 pictures took mostly by GoPro Hero and
 Samsung Galaxy Nexus.<br/>
 *Description:* The same watermark was embedded into all photos, the edge model
@@ -309,95 +412,23 @@ then we get:
 ![X_a-X_b watermarked](/images/histograms/diff_hist_water_4pics.png)<br/>
 Thus the shape analysis of this histogram might give a predicate if there is
 some E_BLIND watermark inside a set of images.
-### Deduction of watermark form the edge model
-We will perform different strategy on CPU than on GPU. So the CPU/GPU algorithms
-will be slightly different and thus the results will differ. The essential step
-for both is to pick the edge and reinforce the watermark, so it reflects
-the delta for this edge in the best way. What does it mean? Let's see
-an example.<br/>
-We initiate w<sub>i</sub> to 0:
-<pre>
-000
-000
-000
-</pre>
-We pick some edge:
-<pre>
-000
-<b>00</b>0
-000
-</pre>
-The edge model claims that *delta = 2* for those pixels. We update:
-<pre>
- 0  0  0
--1  1  0
- 0  0  0
-</pre>
-In next step we pick another edge:
-<pre> 0  0  0
--1  <b>1</b>  0
- 0  <b>0</b>  0
-</pre>
-The edge model claims that *delta = 0* for those pixels. We update:
-<pre>
- 0  0  0
--1 0.5 0
- 0 0.5 0
-</pre>
-And so on. The pseudo code for reinforcing a watermark by edge:
-<pre>
-def update(i, j, delta):
-  change w<sub>i</sub> and w<sub>j</sub>, so that
-    w<sub>i</sub> + w<sub>j</sub> stays the same 
-    and w<sub>i</sub> + delta = w<sub>j</sub>
-    and -1 <= w<sub>i</sub>, w<sub>j</sub> <= 1 (possibly decrease delta to fit this condition)
-def reinforce(edge):
-  update(edge.i, edge.j, delta(edge))
-</pre>
-Reinforcing should keep the invariant that sum over all watermark<sub>i</sub>
-should be 0. Let us call it *0-sum invariant*.
-#### CPU strategy
-On CPU we just select randomly an edge from the edge model.
-<pre>
-for every vertex i: set w<sub>i</sub> = 0.
-repeat:
-  edge = pick_random_edge(graph)
-  reinforce(edge)
-</pre>
-#### GPU strategy
-Let us imagine that we are a vertex of some edge model. There are potentialy
-4 edges that have an end point in us - called up, right, down, left edges. What
-we want to do is to iteratively reinforce a watermark by
-up/right/down/left/up/... edges. It is not that easy to do so parallely on GPU.
-If we perform this procedure concurrently for every vertex then it might happen
-that we will be reinforcing a watermark by two intersecting edges at the same
-time and that might cause undesirable effect. The key word is intersecting and
-the undesirable effect is not maintaining 0-sum invariant. The other problem is
-that we have to take care that if we are on the border of photo then we do not
-have 4 edges but less and so some of the reinforcing operation won't be
-available. To solve that problems we will be provided magical procedure
-getVertexId that will provide us a relevant vertex. Basically, for a vertical
-rainforcing (up/down) it will skip vertices from every second row. For
-a horizontal reinforcing, it will skip vertices from every second column.
-In the implementation, there are only right and down reinforcing however, but
-the sets of vertices are switching. There will be four consequtive phases:<br/>
-  1. First horizontal phase
-  2. First vertical phase
-  3. Second horizontal phase
-  4. Second vertical phase
-
-![Horizontal phases](/images/horizontal-phases.png)
-![Vertical phases](/images/vertical-phases.png)
-<pre>
-repeat:
-  parallel reinforce(up_edge(getVertexIdHorizontal1st()))
-  parallel reinforce(up_edge(getVertexIdVertical1st()))
-  parallel reinforce(up_edge(getVertexIdHorizontal2nd()))
-  parallel reinforce(up_edge(getVertexIdVertical2nd()))
-</pre>
 
 ## Experimental speed of convergence
-#### TODO generate speed of convergence for GPU and CPU. Explain the difference
+The breaking algorithm was run for every combination of indices env, *B* and
+times on sets of watermarked images. The possible values for indices are
+described by:
+  1. Index *env* in *{CPU, GPU}*.
+  2. Index *B* in *{1, 5, 9, 13, 17, 21}*.
+  3. Index *times* in *{1, 2, 3}* in case of *env* = CPU or *times* in *{1, 2, 3, 4, 5}* in case of *env* = GPU
+
+Index *B* denotes that we run the breaking algorithm on a set of cardinality *B*.
+Index times denotes number of a sample set of cardinality *B* that is run on
+*env*. We ran the breaking algorithm and computed linear correlations, which
+then we averaged over all times. So for every *env* and *B* we got average
+linear correlation. The results was displayed on below picture from left to right,
+sorted by *B*.
+![lc-convergence](/images/time-benchmark.png)
+*lc-convergence speed on CPU and GPU.*
 
 ## Running code
 Generating random watermark:<br/>
@@ -418,27 +449,41 @@ Generating histogram for differences between adjacent pixels:<br/>
 python diffenerce_histogram.py --in=photos/  --rangeradius=30
 
 ## Speed comparision between CPU and GPU
-#### TODO add array that shows GPU speedup
+A test was performed to compare execution speed of CPU and GPU solutions. 
+We used *Intel(R) Core(TM) i7-4710HQ CPU @ 2.50GHz* for CPU and
+*GeForce GTX 980* for GPU.
+There were *100* runs of both versions. The real time of execution is presented on
+below benchmark. Every run had to process $B$ images, where *B* was
+taken from *1* to *100*. The times on chart are sorted by *B* and
+displayed from left to right. Fluctuations for CPU solutions might come from the
+fact that the solution is using multi processing and the processes have to
+synchronized between them, which works in nondeterministic time.
+![lc-convergence](/images/lc-benchmark.png)
 
 ## Problems
 1. File format: If you take a content and watermark them using E_BLIND and then
 you save them as JPG then it is more likely that your watermark won't survive
 a compresion and will not be visible anymore. So when I use E_BLIND, I save
 the watermarked content in BMP.
-2. Analysis of breaking algorithm assumes that
-C'<sup>k</sup> = C<sup>k</sup> + w. In fact,
-C'<sup>k</sup> = max(0, min(255, C<sup>k</sup> + w))
+2. Analysis of breaking algorithm assumes that *C'^k = C^k + w*. In fact,
+*C'^k = max(0, min(255, C^k + w))*. It should be verified that
+*Pr(C'^k = max(0, min(255, C^k + w)) != C^k + w)* in Random Picture Model.
 3. Understand why peaks and antipeaks are in -0.75, -0.3, 0, 0.3, 0.75 when
 considering Natural Picture Model.
 4. The tests for breaking E_BLIND accuracy were performed only on one watermark.
 They should be performed on many such watermarkes and we should claim
 the averaged accuracy.
+5. Verify if *Pr(C_i > C_j) = Pr(C_i < C_j)* is true for Natural Picture
+Model and if not then approximate the error.
+6. Explore and prove the relation between percentage of *delta* predicted
+correctly and a lower bound on percentage of correctly predicted pixels
+in an underlying watermark.
 
 ## Epilogue
-You can make E_BLIND resistant from this attack if you have a set of watermarks
-and you always pick a watermark at random before watermarking any single
-picture or in case you are watermarking movie then you should pick a watermark
-at random for any frame.<br/>
+You can make E_BLIND resistant from the presented attack if you have
+a set of watermarks and you always pick a watermark at random before
+watermarking any single picture. In case you are watermarking movie, you
+should pick a watermark at random for each frame.<br/>
 If you are aware of any bugs or typos then feel free to contact me on gmail. I
 have the same id as I have on github.
 
