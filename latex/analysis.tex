@@ -2,42 +2,44 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \begin{document}
-For both Random Picture Model and Natural Picture Model we consider $C^k_i$ that
-is the color of pixel $i$ on image $k$. Then let:\\
+Let us recall that $B$ is the number of pictures in the input set.
+For both Random Picture Model and Natural Picture Model we consider $\{C^k\}_k$.
+These are random variables that describe a set of input images. Then
+for any adjacent pixels $i$ and $j$ we
+define:\\
 $X^k_{ij} =
 \left\{
 \begin{matrix}
 1 & \text{, if } C^k_i > C^k_j\\
 0 & \text{, if } C^k_i = C^k_j\\
 -1 & \text{, if } C^k_i < C^k_j
-\end{matrix}\right.$\\
-$Y_{ij} = \frac{\sum^B_k X^k_{ij}}{B}$\\
+\end{matrix}\right.\\
+Y_{ij} = \frac{\sum^B_k X^k_{ij}}{B}$\\
 We will explore values of $E(Y_{ij})$ and $Var(Y_{ij})$ to get some conclusions
-about the edge model.\\
-Let us jump to Random Picture Model and let $p_l = Pr(X^k_{ij} = l)$ then:
+about the $delta$.\\
+Let us jump to Random Picture Model and let $p_l = Pr(X^k_{ij} = l)$ then:\\
 $p_0 = \frac{1}{256}$\\
-$p_1 = p_{-1} = \frac{1-p_0}{2} = \frac{255}{512}$\\
-$E(X^k_{ij}) = 1\cdot p_1 + 0\cdot p_0 + (-1)\cdot p_{-1}$\\
+$p_1 \stackrel{(\ref{trick1})}{=} p_{-1} = \frac{1-p_0}{2} = \frac{255}{512}$\\
+$E(X^k_{ij}) = 1\cdot p_1 + 0\cdot p_0 + (-1)\cdot p_{-1} = 0$\\
 $E(Y_{ij}) = 0$\\
-$Var(Y_{ij}) = \frac{Var(X^1_{ij})}{B} = \frac{p_1 + p_{-1}}{B} = \frac{255}{256\cdot B}$\\
-Now let's see how $Y_{ij}$ behaves when input are watermarked pictures with
-the same watermark. We have $C'^k = C^k + w$ as input.\\
+$Var(Y_{ij}) = \frac{Var(\sum^B_k X^k_{ij})}{B\cdot B} = \frac{Var(X^1_{ij})}{B} = \frac{p_1 + p_{-1}}{B} = \frac{255}{256\cdot B}$\\
+Let us see how $Y_{ij}$ behaves when input is a set of watermarked pictures with
+the same watermark. We have $C^k = O^k + w$ as input.\\
 In case $w_i > w_j$ then\\
 $X^k_{ij} =
 \left\{
 \begin{matrix}
-1 & \text{, if } C^k_i + w_i > C^k_j + w_j\\
-0 & \text{, if } C^k_i + w_i = C^k_j + w_j\\
--1 & \text{, if } C^k_i + w_i < C^k_j + w_j
+1 & \text{, if } O^k_i + w_i > O^k_j + w_j\\
+0 & \text{, if } O^k_i + w_i = O^k_j + w_j\\
+-1 & \text{, if } O^k_i + w_i < O^k_j + w_j
 \end{matrix}\right.$\\
 \begin{align*}
-p_1 &= Pr(X^k_{ij} = 1) = Pr(C^k_i + w_i > C^k_j + w_j) =\\
-    &= Pr(C^k_i + 2 > C^k_j) =\\
-    &= \sum_{l=0}^{255} Pr(C^k_i + 2 > C^k_j | C^k_j = l)Pr(C^k_j = l) =\\
-    &= (1 + \sum_{i=1}^{255} \frac{257-i}{256})\cdot \frac{1}{256} =\\
-    &=\frac{33151}{65536}\approx 0.506\\
-p_0 &= Pr(C^k_i + 2 = C^k_j) = \sum_{l=0}^{255} Pr(C^k_i + 2 = C^k_j | C^k_j = l)Pr(C^k_j = l)\\
-    &= \sum_{l=2}^{255} Pr(C^k_i + 2 = C^k_j | C^k_j = l)Pr(C^k_j = l)\\
+p_1 &= Pr(X^k_{ij} = 1) = Pr(O^k_i + w_i > O^k_j + w_j) =\\
+    &= Pr(O^k_i + 2 > O^k_j) =\\
+    &= \sum_{l=0}^{255} Pr(O^k_i + 2 > O^k_j | O^k_j = l)Pr(O^k_j = l) =\\
+    &= \left(1 + \sum_{i=1}^{255} \frac{257-i}{256}\right)\cdot \frac{1}{256} = \frac{33151}{65536}\approx 0.506\\
+p_0 &= Pr(O^k_i + 2 = O^k_j) = \sum_{l=0}^{255} Pr(O^k_i + 2 = O^k_j | O^k_j = l)Pr(O^k_j = l)\\
+    &= \sum_{l=2}^{255} Pr(O^k_i + 2 = O^k_j | O^k_j = l)Pr(O^k_j = l)\\
     &= \frac{254}{65536} \approx 0.004\\
 p_{-1} &= 1 - p_0 - p_1 = \frac{32131}{65536} \approx 0.49
 \end{align*}\\
@@ -49,36 +51,41 @@ Var(Y_{ij}) &= \frac{Var(X^k_{ij})}{B}\\
             &= \frac{p_1 + p_{-1} + (p_1-p_{-1})^2}{B}\\
             &\approx \frac{0.996}{B}
 \end{align*}
-In case $w_i = w_j$ then\\
+From equation (\ref{trick2}) we know $p_1 - p_{-1} = \varepsilon$ and thus
+\begin{equation}
+\label{eq:avg:eps}
+E(avg_k(sgn(C^k_i-C^k_j))) = E(Y_{ij}) = \varepsilon.
+\end{equation}
+In case $w_i = w_j$ then it is like there were no watermark, so:\\
 \begin{align*}
 p_0 &= \frac{1}{256}\\
-p_1 &= p_{-1} = \frac{1-p_0}{2} = \frac{255}{512}\\
+p_1 = p_{-1} &= \frac{255}{512}\\
 E(Y_{ij}) &= 0\\
-Var(Y_{ij}) &= \frac{p_1 + p_{-1} + (p_1-p_{-1})^2}{B} = \frac{255}{256\cdot B} \approx \frac{0.996}{B}
+Var(Y_{ij}) &= \frac{255}{256\cdot B} \approx \frac{0.996}{B}
 \end{align*}
-In case $w_i < w_j$ then\\
+In case $w_i < w_j$ then $Y_{ij} = -Y_{ji}$ so:\\
 \begin{align*}
 E(Y_{ij}) &= -\frac{255}{256}\cdot \frac{1}{64}\\
 Var(Y_{ij}) &= \frac{p_1 + p_{-1} + (p_1-p_{-1})^2}{B} \approx \frac{0.996}{B}
 \end{align*}
 Having the expected values of $Y_{ij}$ computed we obtained a natural predicate
-that will tell us how the edge model should look like. Basically, we will
-claim:\\
+that gives $delta$. Basically, we set:\\
 $delta(i, j) = \left\{
   \begin{matrix*}[l]
     2&\text{, if } Y_{ij} < -\tau\\
     0&\text{, if } -\tau <= Y_{ij} <= \tau\\
     -2&\text{, if } \tau < Y_{ij}
-  \end{matrix*}\right.$ , where $\tau = \frac{p_1 - p_{-1}}{2}$\\
-It is crucial to figure out how good the predicate is. To get this we will
-compute $Pr(|Y_{ij} - E(Y_{ij})| >= \tau)$. If it is small then the edge model
-is approximated well. Let's apply Chebyshev inequality:
+  \end{matrix*}\right.$ , where $\tau = \frac{\varepsilon}{2}$\\
+Let us apply Chebyshev's inequality to $Pr(|Y_{ij} - E(Y_{ij})| >= \tau)$:
 $$
 Pr(|Y_{ij} - E(Y_{ij})| \geq \tau)
   \leq \frac{Var(Y_{ij})}{\tau^2}
   \leq \frac{1}{B\tau^2}
-  = \frac{256\cdot 256\cdot 128\cdot 128}{255\cdot 255\cdot B}
+  = \frac{256\cdot 256\cdot 128\cdot 128}{255\cdot 255\cdot B},
 $$
-, so if $B > 166000$ then $Pr(|Y_{ij} - E(Y_{ij})| >= \tau) <= 0.1$ and thus
-the edge model is approximated well.
+so if $B > 166000$ then $Pr(|Y_{ij} - E(Y_{ij})| >= \tau) <= 0.1$ and thus
+$90$\% of $delta$ is correctly predicted. The number $166000$ is only an upper bound. Experiments shows
+that we need much less pictures to get good results (see section~\ref{sec:performance}).\\
+The way to deduce $delta$ from the input data is to take $C^k = c^k$ and
+evaluate $delta$ based on that.
 \end{document}

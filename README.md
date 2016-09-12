@@ -216,30 +216,41 @@ adjacent pixels *i* and *j* from the picture then<br/>
 *Pr(c<sub>i</sub> &gt; c<sub>j</sub>) = Pr(c<sub>i</sub> &lt; c<sub>j</sub>)*.<br/>
 However, if the image *C* is watermarked with E_BLIND (so *C = O + w*, for
 some *O* from RPM) and if *w<sub>i</sub> > w<sub>j</sub>* then<br/>
-*Pr(c<sub>i</sub> &gt; c<sub>j</sub>) = Pr(c<sub>i</sub> &lt; c<sub>j</sub>) + epsilon*, for some *epsilon > 0* that is common for every *i* and *j*.<br/>
+*Pr(c<sub>i</sub> &gt; c<sub>j</sub>) = Pr(c<sub>i</sub> &lt; c<sub>j</sub>) + epsilon*,<br/>
+for some *epsilon > 0* that is common for every *i* and *j*.<br/>
 We hope that epsilon will be big enough.<br/>
-The above equations are true in Random Picture Model and we believe them to be
-true for Natural Picture Model or almost true. By almost true we mean that
-= ralation becomes *is very close to* relation. We will introduce statistics
-based on that and getting a corpus of watermarked images, we will try to
-conclude what is *&Delta;w* (*delta* of *w*) between all adjacent pixels. When
-we conclude the *delta*, we will try to figure out all values of *w*.
+Let us take a set of input images – a set of cardinality *B*. For every two
+adjacent pixels *i* and *j*, we focus on average over all images of *sgn(C<sub>i</sub>−C<sub>j</sub>)*. We
+prove that *E(avg<sub>k</sub>(sgn(C<sub>i</sub><sup>k</sup>−C<sub>j</sub><sup>k</sup>)))*
+is equal to *epsilon* when *w<sub>i</sub> > w<sub>j</sub>* and is *0* when
+*w<sub>i</sub> = w<sub>j</sub>*. What is more, we show that
+*Var(avg<sub>k</sub>(sgn(C<sub>i</sub><sup>k</sup>−C<sub>j</sub><sup>k</sup>))) = O(1/B)*
+which is very small, if we have *B* big enough. Based on
+*avg<sub>k</sub>(sgn(C<sub>i</sub><sup>k</sup>−C<sub>j</sub><sup>k</sup>))*,
+we would like to predict all the differences of *w<sub>i</sub> − w<sub>j</sub>*, for all adjacent pixels
+*i* and *j*. That might be hard, so we would be satisfied if we predict *90%*
+of differences correctly. We call our prediction of these differences – *delta*.
+Having *delta* computed, we try to approximate embedded watermark.
+Until now, we had consideration on random variables. To make it under-
+standable from a computer perspective, we set *C<sup>k</sup> = c<sup>k</sup>* and we compute
+*delta*. Then we have heuristic algorithms that can produce a watermark
+from *delta*.
+We prove that the prediction of *w<sub>i</sub> − w<sub>j</sub>* differences is correct on the level
+of *90%*. Unfortunately we cannot proof any of above for Natural Picture
+Model. However, we proceed to treat images the same way and then we
+make a small adjustment that solves the problem. Finally, We explore how
+well the breaking algorithm is in reality.
 
-The algorithm will have two steps:
-  1. Deduction of an edge model.
-  2. Deduction of a watermark form the edge model.
+The algorithm have two steps:
+  1. Computing *delta*.
+  2. Computing an approximated watermark form *delta*.
 
-### Defining edge model
-Let us define a graph. The set of vertices will corespond to pixels. Let us
-remind that we consider images of certain size, so the number of vertices is
-set. There will be an edge between two vertices iff the coresponding pixels are
-adjacent. For every edge *(i, j)* we want to claim value *delta(i, j)* that will
-denote our guess about the watermark difference on pixel *i* and *j*, i.e.
-*w<sub>i</sub> + delta(i, j) = w<sub>j</sub>*. So by deduction of edge model, we
-understand that given the set of photos with the same watermark we guess
-*delta(i, j)*. Having *delta(i, j)* we go to step 2 and we try to deduce
-*w<sub>i</sub>*.
-### Deduction of edge model
+### Defining *delta*
+We are considering images of certain size *width×height*. We define *delta(i, j)*
+iff pixel *i* is adjacent to pixel *j*. We want to claim value *delta(i, j)* that will
+denote our prediction about the watermark difference on pixel *i* and *j*, i.e.
+*w<sub>i</sub> + delta(i, j) = w<sub>j</sub>* if we predicted correctly.
+### Computing *delta*
 ![Horizontal Y_{ij} histogram](/latex/analysis.png)<br/>
 The idea for deducing the edge model from the input data is to take
 *C<sup>k</sup> = c<sup>k</sup>* and evaluate *delta* based on that. Let us see
